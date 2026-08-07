@@ -1,0 +1,466 @@
+{{> head}}
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center">
+  <div class="w-full max-w-md px-4">
+    <div class="bg-white rounded-lg shadow-xl p-8">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Create Account</h1>
+        <p class="text-gray-600">Join Mediserve to get started</p>
+      </div>
+
+      <!-- Error Messages -->
+      {{#if errors}}
+        <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded">
+          {{#each errors}}
+            <p class="text-red-700 text-sm mb-2 flex items-center">
+              <i class="fas fa-exclamation-circle mr-2"></i>
+              {{this}}
+            </p>
+          {{/each}}
+        </div>
+      {{/if}}
+
+      <!-- Success Message -->
+      {{#if success}}
+        <div class="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded">
+          <p class="text-green-700 text-sm flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            {{success}}
+          </p>
+        </div>
+      {{/if}}
+
+      {{#if message}}
+        <div class="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+          <p class="text-blue-700 text-sm flex items-center">
+            <i class="fas fa-info-circle mr-2"></i>
+            {{message}}
+          </p>
+        </div>
+      {{/if}}
+
+      <!-- Registration Form -->
+      <form method="POST" action="/register" class="space-y-4" id="registerForm">
+        <!-- Name Input -->
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+          <input 
+            type="text" 
+            id="name"
+            name="name" 
+            placeholder="Enter your full name" 
+            value="{{formData.name}}" 
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" 
+            required 
+            minlength="3"
+          />
+          <small class="text-gray-500 text-xs mt-1 block">Minimum 3 characters</small>
+        </div>
+
+        <!-- Email Input -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+          <input 
+            type="email" 
+            id="email"
+            name="email" 
+            placeholder="you@example.com" 
+            value="{{formData.email}}" 
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" 
+            required 
+          />
+          <small class="text-gray-500 text-xs mt-1 block">We'll use this to verify your account</small>
+        </div>
+
+        <!-- Role Selection -->
+        <div>
+          <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Register As</label>
+          <select
+            id="role"
+            name="role"
+            data-current-role="{{formData.role}}"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            required
+          >
+            <option value="patient">Patient</option>
+            <option value="doctor">Doctor</option>
+            <option value="nurse">Nurse</option>
+          </select>
+        </div>
+
+        <!-- Doctor/Nurse Extra Fields -->
+        <div id="specializationGroup" class="hidden">
+          <label for="specialization" class="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+          <input
+            type="text"
+            id="specialization"
+            name="specialization"
+            placeholder="e.g. General Medicine"
+            value="{{formData.specialization}}"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+          />
+        </div>
+
+        <div id="doctorLicenseGroup" class="hidden">
+          <label for="license" class="block text-sm font-medium text-gray-700 mb-1">Doctor License Number</label>
+          <input
+            type="text"
+            id="license"
+            name="license"
+            placeholder="Enter doctor license number"
+            value="{{formData.license}}"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+          />
+        </div>
+
+        <div id="experienceGroup" class="hidden">
+          <label for="experience" class="block text-sm font-medium text-gray-700 mb-1">Years of Experience</label>
+          <input
+            type="number"
+            id="experience"
+            name="experience"
+            min="0"
+            placeholder="0"
+            value="{{formData.experience}}"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+          />
+        </div>
+
+        <div id="nurseLicenseGroup" class="hidden">
+          <label for="licenseNumber" class="block text-sm font-medium text-gray-700 mb-1">Nurse License Number</label>
+          <input
+            type="text"
+            id="licenseNumber"
+            name="licenseNumber"
+            placeholder="Enter nurse license number"
+            value="{{formData.licenseNumber}}"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+          />
+        </div>
+
+        <!-- Patient Personal Details Section -->
+        <div id="patientDetailsGroup" class="hidden border-t pt-4 mt-4">
+          <h3 class="text-sm font-semibold text-gray-800 mb-4">Personal Details</h3>
+          
+          <!-- Phone -->
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              placeholder="e.g. +1-234-567-8900"
+              value="{{formData.phone}}"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            />
+          </div>
+
+          <!-- Age -->
+          <div>
+            <label for="age" class="block text-sm font-medium text-gray-700 mb-1 mt-3">Age <span class="text-red-500">*</span></label>
+            <input
+              type="number"
+              id="age"
+              name="age"
+              placeholder="Enter your age"
+              value="{{formData.age}}"
+              min="1"
+              max="120"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            />
+          </div>
+
+          <!-- Gender -->
+          <div>
+            <label for="gender" class="block text-sm font-medium text-gray-700 mb-1 mt-3">Gender <span class="text-red-500">*</span></label>
+            <select
+              id="gender"
+              name="gender"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            >
+              <option value="">Select Gender</option>
+              <option value="male" {{#if (eq formData.gender 'male')}}selected{{/if}}>Male</option>
+              <option value="female" {{#if (eq formData.gender 'female')}}selected{{/if}}>Female</option>
+              <option value="other" {{#if (eq formData.gender 'other')}}selected{{/if}}>Other</option>
+            </select>
+          </div>
+
+          <!-- Blood Type -->
+          <div>
+            <label for="bloodType" class="block text-sm font-medium text-gray-700 mb-1 mt-3">Blood Type <span class="text-red-500">*</span></label>
+            <select
+              id="bloodType"
+              name="bloodType"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            >
+              <option value="">Select Blood Type</option>
+              <option value="O+" {{#if (eq formData.bloodType 'O+')}}selected{{/if}}>O+</option>
+              <option value="O-" {{#if (eq formData.bloodType 'O-')}}selected{{/if}}>O-</option>
+              <option value="A+" {{#if (eq formData.bloodType 'A+')}}selected{{/if}}>A+</option>
+              <option value="A-" {{#if (eq formData.bloodType 'A-')}}selected{{/if}}>A-</option>
+              <option value="B+" {{#if (eq formData.bloodType 'B+')}}selected{{/if}}>B+</option>
+              <option value="B-" {{#if (eq formData.bloodType 'B-')}}selected{{/if}}>B-</option>
+              <option value="AB+" {{#if (eq formData.bloodType 'AB+')}}selected{{/if}}>AB+</option>
+              <option value="AB-" {{#if (eq formData.bloodType 'AB-')}}selected{{/if}}>AB-</option>
+            </select>
+          </div>
+
+          <!-- Address -->
+          <div>
+            <label for="address" class="block text-sm font-medium text-gray-700 mb-1 mt-3">Address <span class="text-red-500">*</span></label>
+            <textarea
+              id="address"
+              name="address"
+              placeholder="Enter your full address"
+              rows="2"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            >{{formData.address}}</textarea>
+          </div>
+
+          <!-- Allergies (Optional) -->
+          <div>
+            <label for="allergies" class="block text-sm font-medium text-gray-700 mb-1 mt-3">Allergies (Optional)</label>
+            <textarea
+              id="allergies"
+              name="allergies"
+              placeholder="List any known allergies"
+              rows="2"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            >{{formData.allergies}}</textarea>
+          </div>
+        </div>
+
+        <!-- Password Input -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <input 
+            type="password" 
+            id="password"
+            name="password" 
+            placeholder="Create a strong password" 
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" 
+            required 
+            minlength="6"
+            oninput="validatePasswords()"
+          />
+          <small class="text-gray-500 text-xs mt-1 block">Minimum 6 characters</small>
+          <small id="passwordError" class="text-red-500 text-xs mt-1 block hidden">Password must be at least 6 characters</small>
+        </div>
+
+        <!-- Confirm Password Input -->
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+          <input 
+            type="password" 
+            id="confirmPassword"
+            name="confirmPassword" 
+            placeholder="Re-enter your password" 
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" 
+            required 
+            oninput="validatePasswords()"
+          />
+          <small id="confirmError" class="text-red-500 text-xs mt-1 block hidden">Passwords do not match</small>
+        </div>
+
+        <!-- Password Strength Indicator -->
+        <div id="strengthIndicator" class="hidden">
+          <div class="flex items-center justify-between text-xs mb-2">
+            <span class="text-gray-600">Password Strength:</span>
+            <span id="strengthText" class="font-semibold"></span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div id="strengthBar" class="h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Terms & Conditions -->
+        <div class="flex items-center mt-6">
+          <input 
+            type="checkbox" 
+            id="terms" 
+            name="terms" 
+            class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer" 
+            required 
+          />
+          <label for="terms" class="ml-2 text-sm text-gray-700">
+            I agree to the <a href="#" class="text-indigo-600 hover:underline font-medium">Terms & Conditions</a>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          id="submitBtn"
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 mt-6 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <i class="fas fa-user-plus"></i>
+          Create Account
+        </button>
+      </form>
+
+      <!-- Login Link -->
+      <div class="mt-6 text-center">
+        <p class="text-gray-600 text-sm">
+          Already have an account? 
+          <a href="/login" class="text-indigo-600 font-semibold hover:underline">Sign In</a>
+        </p>
+      </div>
+
+      <!-- Footer Features -->
+      <div class="mt-8 pt-6 border-t border-gray-200">
+        <div class="grid grid-cols-3 gap-3 text-center text-xs text-gray-600">
+          <div class="flex flex-col items-center">
+            <i class="fas fa-shield-alt text-indigo-600 text-lg mb-1"></i>
+            <span>Secure</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <i class="fas fa-lock text-indigo-600 text-lg mb-1"></i>
+            <span>Encrypted</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <i class="fas fa-check-circle text-indigo-600 text-lg mb-1"></i>
+            <span>Verified</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateRoleFields() {
+      const role = document.getElementById('role').value;
+      const specializationGroup = document.getElementById('specializationGroup');
+      const doctorLicenseGroup = document.getElementById('doctorLicenseGroup');
+      const experienceGroup = document.getElementById('experienceGroup');
+      const nurseLicenseGroup = document.getElementById('nurseLicenseGroup');
+      const patientDetailsGroup = document.getElementById('patientDetailsGroup');
+      const specialization = document.getElementById('specialization');
+      const doctorLicense = document.getElementById('license');
+      const nurseLicense = document.getElementById('licenseNumber');
+      const phone = document.getElementById('phone');
+      const age = document.getElementById('age');
+      const gender = document.getElementById('gender');
+      const bloodType = document.getElementById('bloodType');
+      const address = document.getElementById('address');
+
+      specializationGroup.classList.add('hidden');
+      doctorLicenseGroup.classList.add('hidden');
+      experienceGroup.classList.add('hidden');
+      nurseLicenseGroup.classList.add('hidden');
+      patientDetailsGroup.classList.add('hidden');
+
+      specialization.required = false;
+      doctorLicense.required = false;
+      nurseLicense.required = false;
+      phone.required = false;
+      age.required = false;
+      gender.required = false;
+      bloodType.required = false;
+      address.required = false;
+
+      if (role === 'patient') {
+        patientDetailsGroup.classList.remove('hidden');
+        phone.required = true;
+        age.required = true;
+        gender.required = true;
+        bloodType.required = true;
+        address.required = true;
+      }
+
+      if (role === 'doctor') {
+        specializationGroup.classList.remove('hidden');
+        doctorLicenseGroup.classList.remove('hidden');
+        experienceGroup.classList.remove('hidden');
+        specialization.required = true;
+        doctorLicense.required = true;
+      }
+
+      if (role === 'nurse') {
+        specializationGroup.classList.remove('hidden');
+        nurseLicenseGroup.classList.remove('hidden');
+        nurseLicense.required = true;
+      }
+    }
+
+    function validatePasswords() {
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const passwordError = document.getElementById('passwordError');
+      const confirmError = document.getElementById('confirmError');
+      const strengthIndicator = document.getElementById('strengthIndicator');
+      const strengthBar = document.getElementById('strengthBar');
+      const strengthText = document.getElementById('strengthText');
+
+      // Validate password length
+      passwordError.style.display = password.length < 6 ? 'block' : 'none';
+
+      // Validate password match
+      confirmError.style.display = confirmPassword && password !== confirmPassword ? 'block' : 'none';
+
+      // Show password strength indicator
+      if (password.length > 0) {
+        strengthIndicator.style.display = 'block';
+        let strength = 0;
+        let strengthLabel = 'Weak';
+        let strengthColor = 'bg-red-500';
+
+        // Calculate strength
+        if (password.length >= 6) strength += 25;
+        if (password.length >= 10) strength += 25;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 25;
+        if (/[0-9]/.test(password) && /[!@#$%^&*]/.test(password)) strength += 25;
+
+        // Set labels
+        if (strength <= 25) {
+          strengthLabel = 'Weak';
+          strengthColor = 'bg-red-500';
+        } else if (strength <= 50) {
+          strengthLabel = 'Fair';
+          strengthColor = 'bg-yellow-500';
+        } else if (strength <= 75) {
+          strengthLabel = 'Good';
+          strengthColor = 'bg-blue-500';
+        } else {
+          strengthLabel = 'Strong';
+          strengthColor = 'bg-green-500';
+        }
+
+        strengthBar.style.width = strength + '%';
+        strengthBar.className = 'h-2 rounded-full transition-all duration-300 ' + strengthColor;
+        strengthText.textContent = strengthLabel;
+        strengthText.className = strength <= 25 ? 'text-red-600' : strength <= 50 ? 'text-yellow-600' : strength <= 75 ? 'text-blue-600' : 'text-green-600';
+      } else {
+        strengthIndicator.style.display = 'none';
+      }
+    }
+
+    // Enable/disable submit button based on form validity
+    const form = document.getElementById('registerForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('change', function() {
+      const isValid = form.checkValidity();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const passwordsMatch = password === confirmPassword && password.length >= 6;
+      const termsChecked = document.getElementById('terms').checked;
+      
+      submitBtn.disabled = !isValid || !passwordsMatch || !termsChecked;
+    });
+
+    // Initial check
+    submitBtn.disabled = true;
+
+    const roleSelect = document.getElementById('role');
+    roleSelect.addEventListener('change', updateRoleFields);
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentRole = roleSelect.dataset.currentRole;
+      if (currentRole && ['patient', 'doctor', 'nurse'].includes(currentRole)) {
+        roleSelect.value = currentRole;
+      } else {
+        roleSelect.value = 'patient';
+      }
+      updateRoleFields();
+    });
+  </script>
+{{> footer }}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mediserve | Healthcare Management Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --hospital-blue-50: #f0f9ff;
+      --hospital-blue-100: #e0f2fe;
+      --hospital-blue-200: #bae6fd;
+      --hospital-blue-500: #0ea5e9;
+      --hospital-blue-700: #0369a1;
+      --hospital-ink: #0f172a;
+    }
+
+    body {
+      font-family: "Manrope", sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-[radial-gradient(circle_at_top,_#f0f9ff_0%,_#eff6ff_45%,_#ffffff_100%)] text-slate-800">
+  <header class="sticky top-0 z-50 border-b border-sky-100 bg-white/90 backdrop-blur">
+    <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4">
+      <a href="/" class="text-xl font-extrabold tracking-tight text-sky-700">Mediserve</a>
+      <nav class="hidden gap-8 text-sm text-slate-600 md:flex">
+        <a href="#consultation" class="hover:text-sky-700">Online Consultation</a>
+        <a href="#features" class="hover:text-sky-700">Features</a>
+        <a href="#roles" class="hover:text-sky-700">User Roles</a>
+        <a href="#contact" class="hover:text-sky-700">Contact</a>
+      </nav>
+      <div class="flex items-center gap-3">
+
+        <a href="/register" class="rounded-lg bg-sky-600 px-4 py-2 text-sm font-bold text-white hover:bg-sky-700">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(14,165,233,0.14),_transparent_45%),radial-gradient(circle_at_bottom_left,_rgba(56,189,248,0.16),_transparent_40%)]"></div>
+      <div class="relative mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 px-6 py-20 md:grid-cols-2 md:py-28">
+        <div>
+          <p class="mb-4 inline-flex rounded-full border border-sky-200 bg-sky-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">
+            Digital Hospital Operations
+          </p>
+          <h1 class="text-4xl font-extrabold leading-tight text-slate-900 md:text-6xl">
+            Fast and Secure Online Consultation for Every Patient
+          </h1>
+          <p class="mt-5 max-w-xl text-lg text-slate-600">
+            Consult with licensed doctors through video or chat, book appointments in seconds, and keep your medical records in one secure platform.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="/register" class="rounded-xl bg-sky-600 px-6 py-3 text-sm font-bold text-white hover:bg-sky-700">Create Account</a>
+            <a href="/login" class="rounded-xl border border-sky-200 bg-white px-6 py-3 text-sm font-semibold text-sky-700 hover:bg-sky-50">Sign In</a>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-sky-100 bg-white p-6 shadow-xl shadow-sky-100/80">
+          <h2 class="mb-4 text-lg font-bold text-slate-900">Live Video Consultation</h2>
+          <div class="rounded-xl border border-sky-100 bg-sky-50 p-5">
+            <div class="relative h-52 overflow-hidden rounded-lg border border-sky-200 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.18),_transparent_50%),linear-gradient(160deg,_#f8fdff,_#e8f6ff)]">
+              <img
+                src="/images/hospital-hero.svg"
+                alt="Stylized hospital illustration"
+                class="absolute inset-0 h-full w-full object-cover opacity-95"
+              />
+              <div class="absolute inset-0 bg-[linear-gradient(120deg,transparent_35%,rgba(14,165,233,0.12)_50%,transparent_65%)]"></div>
+              <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <p class="text-xs uppercase tracking-[0.18em] text-sky-700">Session Preview</p>
+                <p class="mt-2 px-4 text-sm text-slate-600">Start a secure live video call with your doctor directly from Mediserve.</p>
+              </div>
+            </div>
+            <a href="/login" class="mt-4 inline-flex rounded-lg bg-sky-600 px-4 py-2 text-sm font-bold text-white hover:bg-sky-700">
+              Join Live Video
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="consultation" class="mx-auto w-full max-w-7xl px-6 py-16">
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <div class="rounded-2xl border border-sky-100 bg-white p-6 shadow-lg shadow-sky-100/70">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">Online Consultation</p>
+          <h2 class="mt-3 text-3xl font-extrabold text-slate-900">Talk to a Doctor Anytime, Anywhere</h2>
+          <p class="mt-4 text-slate-600">
+            Mediserve online consultation is designed for quick access to care. Patients can choose chat or video consultation,
+            receive digital prescriptions, and get follow-up reminders without visiting the clinic physically.
+          </p>
+          <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div class="rounded-xl border border-sky-100 bg-sky-50 p-4">
+              <p class="text-sm font-semibold text-sky-800">Video Consult</p>
+              <p class="mt-1 text-xs text-slate-600">Real-time doctor consultation with private and secure sessions.</p>
+            </div>
+            <div class="rounded-xl border border-sky-100 bg-sky-50 p-4">
+              <p class="text-sm font-semibold text-sky-800">Chat Support</p>
+              <p class="mt-1 text-xs text-slate-600">Message doctors for non-emergency health concerns and follow-ups.</p>
+            </div>
+            <div class="rounded-xl border border-sky-100 bg-sky-50 p-4">
+              <p class="text-sm font-semibold text-sky-800">E-Prescription</p>
+              <p class="mt-1 text-xs text-slate-600">Receive medication instructions and treatment plans instantly.</p>
+            </div>
+            <div class="rounded-xl border border-sky-100 bg-sky-50 p-4">
+              <p class="text-sm font-semibold text-sky-800">Appointment Tracking</p>
+              <p class="mt-1 text-xs text-slate-600">Monitor upcoming and completed consultations in your dashboard.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-sky-100 bg-gradient-to-br from-sky-100/70 via-white to-sky-50 p-6 shadow-lg shadow-sky-100/70">
+          <h3 class="text-xl font-extrabold text-slate-900">How It Works</h3>
+          <ol class="mt-4 space-y-3 text-sm text-slate-700">
+            <li><span class="font-semibold text-sky-700">1.</span> Create your Mediserve account.</li>
+            <li><span class="font-semibold text-sky-700">2.</span> Choose a doctor and preferred consultation time.</li>
+            <li><span class="font-semibold text-sky-700">3.</span> Join the video or chat session from your dashboard.</li>
+            <li><span class="font-semibold text-sky-700">4.</span> Get diagnosis, notes, and prescription after consultation.</li>
+          </ol>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href="/register" class="rounded-lg bg-sky-600 px-5 py-2 text-sm font-bold text-white hover:bg-sky-700">Start Consultation</a>
+            <a href="/login" class="rounded-lg border border-sky-200 bg-white px-5 py-2 text-sm font-semibold text-sky-700 hover:bg-sky-50">Patient Login</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="mx-auto w-full max-w-7xl px-6 py-16">
+      <div class="mb-8 flex items-end justify-between gap-4">
+        <h2 class="text-3xl font-extrabold text-slate-900">Core Features</h2>
+        <p class="text-sm text-slate-500">Built for modern clinics and hospitals</p>
+      </div>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <article class="rounded-2xl border border-sky-100 bg-white p-5 shadow-md shadow-sky-100/70">
+          <h3 class="text-lg font-bold text-sky-700">Online Consultations</h3>
+          <p class="mt-2 text-sm text-slate-600">Chat and video consultations with scheduling and queue support.</p>
+        </article>
+        <article class="rounded-2xl border border-sky-100 bg-white p-5 shadow-md shadow-sky-100/70">
+          <h3 class="text-lg font-bold text-sky-700">Medical Records</h3>
+          <p class="mt-2 text-sm text-slate-600">Centralized patient records, prescriptions, and diagnosis history.</p>
+        </article>
+        <article class="rounded-2xl border border-sky-100 bg-white p-5 shadow-md shadow-sky-100/70">
+          <h3 class="text-lg font-bold text-sky-700">Role-Based Security</h3>
+          <p class="mt-2 text-sm text-slate-600">Controlled access for admin, doctor, nurse, and patient workflows.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="roles" class="border-y border-sky-100 bg-sky-50/60">
+      <div class="mx-auto w-full max-w-7xl px-6 py-16">
+        <h2 class="text-3xl font-extrabold text-slate-900">Built for Every Role</h2>
+        <div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+          <div class="rounded-xl border border-sky-100 bg-white p-4 shadow-sm shadow-sky-100/60">
+            <h3 class="font-bold text-sky-700">Patient</h3>
+            <p class="mt-1 text-sm text-slate-600">Appointments, records, and notifications in one place.</p>
+          </div>
+          <div class="rounded-xl border border-sky-100 bg-white p-4 shadow-sm shadow-sky-100/60">
+            <h3 class="font-bold text-sky-700">Doctor</h3>
+            <p class="mt-1 text-sm text-slate-600">Manage schedules, consultations, and prescriptions.</p>
+          </div>
+          <div class="rounded-xl border border-sky-100 bg-white p-4 shadow-sm shadow-sky-100/60">
+            <h3 class="font-bold text-sky-700">Nurse</h3>
+            <p class="mt-1 text-sm text-slate-600">Assist doctors with records and patient monitoring.</p>
+          </div>
+          <div class="rounded-xl border border-sky-100 bg-white p-4 shadow-sm shadow-sky-100/60">
+            <h3 class="font-bold text-sky-700">Admin</h3>
+            <p class="mt-1 text-sm text-slate-600">User approvals, analytics, and system oversight.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact" class="mx-auto w-full max-w-7xl px-6 py-10 text-sm text-slate-600">
+    <div class="grid grid-cols-1 gap-4 border-t border-sky-100 pt-6 md:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <p class="font-bold text-sky-700">Mediserve</p>
+        <p class="mt-1">Healthcare Management Platform</p>
+      </div>
+      <div>
+        <p class="font-bold text-slate-900">Contact Number</p>
+        <p class="mt-1">+63 917 123 4567</p>
+      </div>
+      <div>
+        <p class="font-bold text-slate-900">Email</p>
+        <p class="mt-1">support@mediserve.local</p>
+      </div>
+      <div>
+        <p class="font-bold text-slate-900">Address</p>
+        <p class="mt-1">Grace Mission Hospital, Philippines</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

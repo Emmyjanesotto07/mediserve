@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{title}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: "Manrope", sans-serif; }
+  </style>
+</head>
+<body class="bg-[radial-gradient(circle_at_top,_#e0f2fe_0%,_#eff6ff_40%,_#f8fafc_100%)] text-slate-900">
+  <div class="min-h-screen flex">
+    <aside class="hidden w-72 border-r border-sky-100 bg-white/90 shadow-[0_20px_80px_rgba(14,165,233,0.08)] lg:block">
+      <div class="border-b border-sky-100 p-6">
+        <h2 class="text-xl font-extrabold tracking-tight text-sky-700">Mediserve</h2>
+        <p class="mt-1 text-sm text-slate-500">Nurse Operations</p>
+      </div>
+      <nav class="space-y-1 p-4 text-sm font-semibold text-slate-700">
+        <a href="#dashboard" class="flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:bg-sky-50 hover:text-sky-700">
+          <i class="fa-solid fa-gauge-high w-5 text-sky-600"></i><span>Dashboard</span>
+        </a>
+        <a href="#appointments" class="flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:bg-sky-50 hover:text-sky-700">
+          <i class="fa-solid fa-calendar-check w-5 text-emerald-600"></i><span>Appointments</span>
+        </a>
+        <a href="#patients" class="flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:bg-sky-50 hover:text-sky-700">
+          <i class="fa-solid fa-user-injured w-5 text-indigo-600"></i><span>Patients</span>
+        </a>
+        <a href="#prescreening" class="flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:bg-sky-50 hover:text-sky-700">
+          <i class="fa-solid fa-list-check w-5 text-amber-600"></i><span>Pre-Screening</span>
+        </a>
+        <a href="#records" class="flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:bg-sky-50 hover:text-sky-700">
+          <i class="fa-solid fa-folder-open w-5 text-cyan-600"></i><span>Records</span>
+        </a>
+        <a href="#messages" class="flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:bg-sky-50 hover:text-sky-700">
+          <i class="fa-solid fa-comment-dots w-5 text-rose-600"></i><span>Messages</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+      <header class="mb-6 flex flex-col gap-4 rounded-[2rem] border border-sky-100 bg-white/80 p-5 shadow-[0_20px_60px_rgba(14,165,233,0.08)] backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.22em] text-sky-700">Nurse Dashboard</p>
+          <h1 id="dashboard" class="mt-1 text-3xl font-extrabold text-slate-900">Welcome, {{nurseName}}</h1>
+          <p class="mt-1 text-sm text-slate-500">Patient flow, pre-screening, follow-ups, and medical records in one workspace.</p>
+        </div>
+        <div class="flex items-center gap-4 self-start sm:self-auto">
+          <div class="rounded-2xl border border-sky-100 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">{{date}}</div>
+          <form action="/logout" method="POST">
+            <button type="submit" class="inline-flex items-center gap-2 rounded-2xl border border-rose-200 bg-white px-4 py-2 text-sm font-bold text-rose-700 transition hover:bg-rose-50">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <span>Logout</span>
+            </button>
+          </form>
+          <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-sm font-extrabold text-white">{{nurseInitials}}</div>
+        </div>
+      </header>
+
+      <section class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div class="rounded-[1.75rem] border border-sky-100 bg-white p-5 shadow-lg shadow-sky-100/50">
+          <p class="text-sm font-semibold text-slate-500">Today's Patients</p>
+          <div class="mt-3 text-3xl font-extrabold text-slate-900">{{stats.todayPatients}}</div>
+          <p class="mt-2 text-xs text-slate-500">Scheduled within the current shift window.</p>
+        </div>
+        <div class="rounded-[1.75rem] border border-sky-100 bg-white p-5 shadow-lg shadow-sky-100/50">
+          <p class="text-sm font-semibold text-slate-500">Pending Approvals</p>
+          <div class="mt-3 text-3xl font-extrabold text-slate-900">{{stats.pendingApprovals}}</div>
+          <p class="mt-2 text-xs text-slate-500">Appointments ready for nurse confirmation.</p>
+        </div>
+        <div class="rounded-[1.75rem] border border-sky-100 bg-white p-5 shadow-lg shadow-sky-100/50">
+          <p class="text-sm font-semibold text-slate-500">Records Updated</p>
+          <div class="mt-3 text-3xl font-extrabold text-slate-900">{{stats.recordsUpdated}}</div>
+          <p class="mt-2 text-xs text-slate-500">Recent nursing notes and EMR entries.</p>
+        </div>
+        <div class="rounded-[1.75rem] border border-sky-100 bg-white p-5 shadow-lg shadow-sky-100/50">
+          <p class="text-sm font-semibold text-slate-500">Follow-ups</p>
+          <div class="mt-3 text-3xl font-extrabold text-slate-900">{{stats.followUps}}</div>
+          <p class="mt-2 text-xs text-slate-500">Patients due for review or reminders.</p>
+        </div>
+      </section>
+
+      <section id="appointments" class="mb-6 rounded-[2rem] border border-sky-100 bg-white p-5 shadow-lg shadow-sky-100/50">
+        <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-sky-700">Appointments</p>
+            <h2 class="mt-1 text-2xl font-extrabold text-slate-900">Appointment Management</h2>
+          </div>
+          <div class="text-sm text-slate-500">Showing {{appointments.length}} appointments in the active range</div>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl border border-sky-100">
+          <table class="w-full table-auto text-left">
+            <thead class="bg-sky-50 text-xs uppercase tracking-[0.12em] text-sky-700">
+              <tr>
+                <th class="px-4 py-3">Patient</th>
+                <th class="px-4 py-3">Doctor</th>
+                <th class="px-4 py-3">Date / Time</th>
+                <th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-sky-50">
+              {{#if appointments.length}}
+              {{#each appointments}}
+              <tr class="bg-white">
+                <td class="px-4 py-4">
+                  <div class="font-semibold text-slate-900">{{this.patientName}}</div>
+                  <div class="text-xs text-slate-500">{{this.consultationType}}</div>
+                </td>
+                <td class="px-4 py-4 text-sm text-slate-600">{{this.doctorName}}</td>
+                <td class="px-4 py-4 text-sm text-slate-600">{{this.date}} at {{this.time}}</td>
+                <td class="px-4 py-4">
+                  <span class="rounded-full px-3 py-1 text-xs font-semibold {{#if (eq this.status "scheduled")}}bg-amber-100 text-amber-700{{else if (eq this.status "completed")}}bg-emerald-100 text-emerald-700{{else}}bg-slate-100 text-slate-600{{/if}}">{{this.status}}</span>
+                </td>
+                <td class="px-4 py-4">
+                  <div class="flex flex-wrap gap-2">
+                    <button type="button" data-approve-appointment="{{this.id}}" class="rounded-xl bg-emerald-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-emerald-700">Approve</button>
+                    <button type="button" data-reschedule-appointment="{{this.id}}" class="rounded-xl border border-sky-200 bg-white px-3 py-2 text-xs font-semibold text-sky-700 transition hover:bg-sky-50">Reschedule</button>
+                  </div>
+                </td>
+              </tr>
+              {{/each}}
+              {{else}}
+              <tr>
+                <td colspan="5" class="px-4 py-8 text-center text-sm text-slate-500">No appointments found for this shift.</td>
+              </tr>
+              {{/if}}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <section id="prescreening" class="rounded-[2rem] border border-sky-100 bg-white p-5 shadow-lg shadow-sky-100/50">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-sky-700">Pre-screening</p>
+          <h3 class="mt-1 text-xl font-extrabold text-slate-900">Vital Signs Recording</h3>
+          <form id="vitalSignsForm" class="mt-4 space-y-4">
+            <div>
+              <label class="mb-1 block text-sm font-semibold text-slate-700">Patient</label>
+              <select name="patientId" class="w-full rounded-2xl border border-sky-100 px-3 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200">
+                {{#if patients.length}}
+                {{#each patients}}
+                  <option value="{{this.id}}">{{this.name}}</option>
+                {{/each}}
+                {{else}}
+                  <option value="">No assigned patient</option>
+                {{/if}}
+              </select>
+            </div>
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div>
+                <label class="mb-1 block text-sm font-semibold text-slate-700">Temperature (°C)</label>
+                <input type="number" step="0.1" name="temperature" placeholder="37.2" class="w-full rounded-2xl border border-sky-100 px-3 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200">
+              </div>
+              <div>
+                <label class="mb-1 block text-sm font-semibold text-slate-700">BP</label>
+                <input type="text" name="bloodPressure" placeholder="120/80" class="w-full rounded-2xl border border-sky-100 px-3 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200">
+              </div>
+            </div>
+            <div>
+              <label class="mb-1 block text-sm font-semibold text-slate-700">Heart Rate (bpm)</label>
+              <input type="number" name="heartRate" placeholder="72" class="w-full rounded-2xl border border-sky-100 px-3 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200">
+            </div>
+            <div>
+              <label class="mb-1 block text-sm font-semibold text-slate-700">Symptoms</label>
+              <input type="text" name="symptoms" placeholder="Fever, cough, headache..." class="w-full rounded-2xl border border-sky-100 px-3 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200">
+            </div>
+            <div>
+              <label class="mb-1 block text-sm font-semibold text-slate-700">Notes</label>
+              <textarea name="notes" class="w-full rounded-2xl border border-sky-100 px-3 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" rows="4" placeholder="Document patient condition, symptoms, observations..."></textarea>
+            </div>
+            <div>
+              <label class="mb-1 block text-sm font-semibold text-slate-700">Linked Appointment</label>
+              <select name="appointmentId" class="w-full rounded-2xl border border-sky-100 px-3 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200">
+                <option value="">Optional</option>
+                {{#each appointments}}
+                  <option value="{{this.id}}">{{this.patientName}} - {{this.date}} {{this.time}}</option>
+                {{/each}}
+              </select>
+            </div>
+            <div class="rounded-2xl border border-dashed border-sky-200 bg-sky-50 p-4 text-sm text-slate-600">
+              Submitting this form adds a nursing pre-screening record and notifies the patient.
+            </div>
+            <button type="submit" class="w-full rounded-2xl bg-sky-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-sky-700">Save Vitals</button>
+          </form>
+        </section>
+
+        <section id="records" class="rounded-[2rem] border border-sky-100 bg-white p-5 shadow-lg shadow-sky-100/50">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-sky-700">Records</p>
+          <h3 class="mt-1 text-xl font-extrabold text-slate-900">Recent Medical Records</h3>
+          <div class="mt-4 space-y-3">
+            {{#if records.length}}
+              {{#each records}}
+                <article class="rounded-2xl border border-sky-100 bg-sky-50/70 p-4">
+                  <div class="flex items-start justify-between gap-3">
+                    <div>
+                      <p class="font-semibold text-slate-900">{{this.title}}</p>
+                      <p class="mt-1 text-xs text-slate-500">{{this.date}} • {{this.patient}}</p>
+                    </div>
+                    <span class="rounded-full bg-white px-3 py-1 text-xs font-semibold text-sky-700">{{this.id}}</span>
+                  </div>
+                  <p class="mt-3 text-sm text-slate-600">{{this.notes}}</p>
+                </article>
+              {{/each}}
+            {{else}}
+              <p class="text-sm text-slate-500">No recent records yet.</p>
+            {{/if}}
+          </div>
+        </section>
+
+        <aside id="messages" class="rounded-[2rem] border border-sky-100 bg-white p-5 shadow-lg shadow-sky-100/50">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-sky-700">Follow-ups</p>
+          <h3 class="mt-1 text-xl font-extrabold text-slate-900">Follow-Up Panel</h3>
+          <div class="mt-4 space-y-3">
+            {{#if followups.length}}
+              {{#each followups}}
+                <article class="rounded-2xl border border-sky-100 bg-white p-4">
+                  <div class="flex items-start justify-between gap-3">
+                    <div>
+                      <p class="font-semibold text-slate-900">{{this.patientName}}</p>
+                      <p class="mt-1 text-xs text-slate-500">Last consultation: {{this.lastConsultation}}</p>
+                      <p class="mt-1 text-xs text-slate-500">Status: <span class="font-semibold text-slate-700">{{this.status}}</span></p>
+                    </div>
+                    <button type="button" data-followup-patient="{{this.patientId}}" class="rounded-xl bg-rose-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-rose-700">Send Reminder</button>
+                  </div>
+                </article>
+              {{/each}}
+            {{else}}
+              <p class="text-sm text-slate-500">No follow-ups queued right now.</p>
+            {{/if}}
+          </div>
+        </aside>
+      </div>
+
+      <section class="mt-6 rounded-[2rem] border border-sky-100 bg-white p-5 shadow-lg shadow-sky-100/50">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-sky-700">Assigned Doctor</p>
+            <h2 class="mt-1 text-2xl font-extrabold text-slate-900">{{#if assignedDoctor}}{{assignedDoctor.name}}{{else}}No assigned doctor{{/if}}</h2>
+            <p class="mt-1 text-sm text-slate-500">{{#if assignedDoctor}}{{assignedDoctor.specialization}}{{else}}Awaiting assignment{{/if}}</p>
+          </div>
+          <div class="rounded-2xl bg-sky-50 px-4 py-3 text-sm text-sky-700">Core tools are connected to live nurse endpoints.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const approveUrl = (appointmentId) => `/nurse/appointments/${appointmentId}/approve`;
+    const rescheduleUrl = (appointmentId) => `/nurse/appointments/${appointmentId}/reschedule`;
+    const followUpUrl = (patientId) => `/nurse/follow-ups/${patientId}`;
+    const vitalsUrl = (patientId) => `/nurse/patient-vitals/${patientId}`;
+
+    const postJson = async (url, payload) => {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || data.message || 'Request failed');
+      }
+      return data;
+    };
+
+    document.querySelectorAll('[data-approve-appointment]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const appointmentId = button.getAttribute('data-approve-appointment');
+        button.disabled = true;
+        try {
+          await postJson(approveUrl(appointmentId), {});
+          window.location.reload();
+        } catch (error) {
+          alert(error.message);
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-reschedule-appointment]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const appointmentId = button.getAttribute('data-reschedule-appointment');
+        const newDate = prompt('Enter the new appointment date and time in ISO format, e.g. 2026-05-14T14:30:00');
+        if (!newDate) return;
+
+        button.disabled = true;
+        try {
+          await postJson(rescheduleUrl(appointmentId), { newDate });
+          window.location.reload();
+        } catch (error) {
+          alert(error.message);
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-followup-patient]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const patientId = button.getAttribute('data-followup-patient');
+        const message = prompt('Follow-up reminder message', 'Please return for a follow-up review.');
+        if (!message) return;
+
+        button.disabled = true;
+        try {
+          await postJson(followUpUrl(patientId), { message });
+          window.location.reload();
+        } catch (error) {
+          alert(error.message);
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+
+    const vitalForm = document.getElementById('vitalSignsForm');
+    if (vitalForm) {
+      vitalForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(vitalForm);
+        const patientId = formData.get('patientId');
+        if (!patientId) {
+          alert('Select a patient first.');
+          return;
+        }
+
+        const payload = Object.fromEntries(formData.entries());
+        try {
+          await postJson(vitalsUrl(patientId), payload);
+          vitalForm.reset();
+          window.location.reload();
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

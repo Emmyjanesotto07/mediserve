@@ -1,0 +1,714 @@
+{{> head}}
+<body class="bg-[radial-gradient(circle_at_top,_#eff6ff_0%,_#f8fafc_45%,_#ffffff_100%)] text-slate-800">
+  <div id="toast" class="fixed right-4 top-4 z-50 hidden rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-lg"></div>
+
+  <main class="mx-auto max-w-7xl space-y-6 px-4 py-6 lg:px-6">
+    <section class="overflow-hidden rounded-3xl border border-sky-100 bg-white/90 shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
+      <div class="grid gap-6 p-6 lg:grid-cols-[1.4fr_0.9fr] lg:p-8">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.3em] text-sky-700">Doctor Workspace</p>
+          <h1 class="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl" id="pageHeading">{{pageHeading}}</h1>
+          <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">{{welcomeMessage}}</p>
+          <div class="mt-5 flex flex-wrap gap-3">
+            <button id="refreshOverviewBtn" type="button" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800">Refresh Overview</button>
+            <button id="refreshScheduleBtn" type="button" class="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-500">Refresh Schedule</button>
+            <a href="/logout" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Logout</a>
+          </div>
+        </div>
+
+        <div class="rounded-2xl bg-slate-950 p-5 text-white shadow-inner">
+          <p class="text-xs uppercase tracking-[0.3em] text-sky-300">Profile Snapshot</p>
+          <h2 class="mt-3 text-2xl font-bold">Dr. {{doctorName}}</h2>
+          <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+            <div class="rounded-xl bg-white/10 p-3">
+              <p class="text-slate-300">Specialization</p>
+              <p class="mt-1 font-semibold">{{profileSnapshot.specialization}}</p>
+            </div>
+            <div class="rounded-xl bg-white/10 p-3">
+              <p class="text-slate-300">Consultation Fee</p>
+              <p class="mt-1 font-semibold">{{profileSnapshot.consultationFee}}</p>
+            </div>
+            <div class="rounded-xl bg-white/10 p-3">
+              <p class="text-slate-300">Experience</p>
+              <p class="mt-1 font-semibold">{{profileSnapshot.experience}} yrs</p>
+            </div>
+            <div class="rounded-xl bg-white/10 p-3">
+              <p class="text-slate-300">Status</p>
+              <p class="mt-1 font-semibold capitalize">{{profileSnapshot.status}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <article class="rounded-2xl border border-sky-100 bg-white p-5 shadow-sm">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Patients Today</p>
+        <p id="totalPatientsToday" class="mt-2 text-3xl font-black text-slate-950">{{stats.totalPatientsToday}}</p>
+      </article>
+      <article class="rounded-2xl border border-sky-100 bg-white p-5 shadow-sm">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Pending Consultations</p>
+        <p id="pendingConsultations" class="mt-2 text-3xl font-black text-amber-600">{{stats.pendingConsultations}}</p>
+      </article>
+      <article class="rounded-2xl border border-sky-100 bg-white p-5 shadow-sm">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Completed Consultations</p>
+        <p id="completedConsultations" class="mt-2 text-3xl font-black text-emerald-600">{{stats.completedConsultations}}</p>
+      </article>
+      <article class="rounded-2xl border border-sky-100 bg-white p-5 shadow-sm">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Unread Alerts</p>
+        <p id="criticalAlerts" class="mt-2 text-3xl font-black text-rose-600">{{stats.criticalAlerts}}</p>
+      </article>
+    </section>
+
+    <section class="grid gap-6 lg:grid-cols-2">
+      <article class="rounded-3xl border border-sky-100 bg-white p-6 shadow-sm">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-bold text-slate-950">Secure Login & Profile Management</h2>
+            <p class="mt-1 text-sm text-slate-600">Update your profile, specialization, experience, status, and consultation fee.</p>
+          </div>
+          <span class="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">Functional</span>
+        </div>
+
+        <form id="profileForm" class="mt-5 grid gap-3 sm:grid-cols-2">
+          <label class="block text-sm">
+            <span class="mb-1 block font-semibold text-slate-700">Name</span>
+            <input name="name" value="{{profileSnapshot.name}}" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none ring-0 focus:border-sky-400" />
+          </label>
+          <label class="block text-sm">
+            <span class="mb-1 block font-semibold text-slate-700">Specialization</span>
+            <input name="specialization" value="{{profileSnapshot.specialization}}" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none ring-0 focus:border-sky-400" />
+          </label>
+          <label class="block text-sm">
+            <span class="mb-1 block font-semibold text-slate-700">Experience (years)</span>
+            <input type="number" min="0" name="experience" value="{{profileSnapshot.experience}}" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none ring-0 focus:border-sky-400" />
+          </label>
+          <label class="block text-sm">
+            <span class="mb-1 block font-semibold text-slate-700">Consultation Fee</span>
+            <input type="number" min="0" step="0.01" name="consultationFee" value="{{profileSnapshot.consultationFee}}" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none ring-0 focus:border-sky-400" />
+          </label>
+          <label class="block text-sm">
+            <span class="mb-1 block font-semibold text-slate-700">Phone</span>
+            <input name="phone" value="{{profileSnapshot.phone}}" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none ring-0 focus:border-sky-400" />
+          </label>
+          <label class="block text-sm">
+            <span class="mb-1 block font-semibold text-slate-700">Status</span>
+            <select name="status" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none ring-0 focus:border-sky-400">
+              <option value="active" {{#if (eq profileSnapshot.status "active")}}selected{{/if}}>Active</option>
+              <option value="inactive" {{#if (eq profileSnapshot.status "inactive")}}selected{{/if}}>Inactive</option>
+              <option value="on_leave" {{#if (eq profileSnapshot.status "on_leave")}}selected{{/if}}>On Leave</option>
+            </select>
+          </label>
+          <div class="sm:col-span-2">
+            <button type="submit" class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800">Save Profile</button>
+          </div>
+        </form>
+
+        <div class="mt-6 rounded-2xl bg-slate-50 p-4">
+          <h3 class="text-sm font-bold uppercase tracking-[0.2em] text-slate-500">Upload Credentials</h3>
+          <form id="documentForm" class="mt-3 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+            <input name="documentType" placeholder="e.g. PRC License, Certification" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400" />
+            <input type="file" name="documentFile" accept="image/*,application/pdf" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm" />
+            <button type="submit" class="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-500">Upload</button>
+          </form>
+          <div class="mt-3 text-xs text-slate-500">Accepted files: JPG, PNG, WEBP, PDF.</div>
+        </div>
+      </article>
+
+      <article class="rounded-3xl border border-sky-100 bg-white p-6 shadow-sm">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-bold text-slate-950">Appointment & Schedule Management</h2>
+            <p class="mt-1 text-sm text-slate-600">Handle upcoming consultations and set your available time slots.</p>
+          </div>
+          <button id="refreshScheduleInlineBtn" type="button" class="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Refresh</button>
+        </div>
+
+        <div class="mt-5 overflow-hidden rounded-2xl border border-slate-200">
+          <div class="max-h-[24rem] overflow-auto">
+            <table class="min-w-full text-left text-sm">
+              <thead class="sticky top-0 bg-slate-50 text-slate-500">
+                <tr>
+                  <th class="px-4 py-3">Time</th>
+                  <th class="px-4 py-3">Patient</th>
+                  <th class="px-4 py-3">Concern</th>
+                  <th class="px-4 py-3">Status</th>
+                  <th class="px-4 py-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="scheduleBody" class="divide-y divide-slate-100">
+                {{#each todaySchedule}}
+                  <tr data-id="{{id}}">
+                    <td class="px-4 py-3 text-slate-600">{{time}}</td>
+                    <td class="px-4 py-3 font-semibold text-slate-900">{{patientName}}</td>
+                    <td class="px-4 py-3 text-slate-600">{{notes}}</td>
+                    <td class="px-4 py-3"><span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 status-pill">{{status}}</span></td>
+                    <td class="px-4 py-3">
+                      <div class="flex flex-wrap gap-2">
+                        <button type="button" class="status-action rounded-lg bg-sky-50 px-2.5 py-1.5 text-xs font-semibold text-sky-700" data-status="scheduled" data-id="{{id}}">Schedule</button>
+                        <button type="button" class="status-action rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-semibold text-emerald-700" data-status="completed" data-id="{{id}}">Complete</button>
+                        <button type="button" class="status-action rounded-lg bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-700" data-status="cancelled" data-id="{{id}}">Cancel</button>
+                        <button type="button" class="start-consultation-btn rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-semibold text-white" data-id="{{id}}">Start</button>
+                      </div>
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="mt-5 rounded-2xl bg-slate-50 p-4">
+          <h3 class="text-sm font-bold uppercase tracking-[0.2em] text-slate-500">Availability</h3>
+          <form id="availabilityForm" class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <input name="dayOfWeek" placeholder="Day of week" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400" />
+            <input type="time" name="startTime" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400" />
+            <input type="time" name="endTime" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400" />
+            <input name="location" placeholder="Clinic / online room" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400" />
+            <textarea name="notes" rows="2" placeholder="Availability notes" class="sm:col-span-2 lg:col-span-4 rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400"></textarea>
+            <div class="lg:col-span-4 flex justify-end">
+              <button type="submit" class="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-500">Save Availability</button>
+            </div>
+          </form>
+          <div class="mt-4 space-y-2">
+            {{#each availabilitySlots}}
+              <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm">
+                <div>
+                  <p class="font-semibold text-slate-900">{{dayOfWeek}} · {{startTime}} - {{endTime}}</p>
+                  <p class="text-slate-500">{{location}}</p>
+                </div>
+                <button type="button" class="delete-availability-btn rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700" data-id="{{id}}">Delete</button>
+              </div>
+            {{/each}}
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid gap-6 lg:grid-cols-2">
+      <article class="rounded-3xl border border-sky-100 bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-950">Online Consultation</h2>
+        <p class="mt-1 text-sm text-slate-600">Start or complete a telemedicine session and keep the notes attached to the appointment.</p>
+        <div class="mt-4 grid gap-4">
+          <form id="startConsultationForm" class="grid gap-3 sm:grid-cols-2">
+            <input name="appointmentId" type="number" min="1" placeholder="Appointment ID" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400" />
+            <select name="consultationType" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400">
+              <option value="chat">Chat</option>
+              <option value="video">Video</option>
+              <option value="in-person">In-person</option>
+            </select>
+            <div class="sm:col-span-2">
+              <button type="submit" class="rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800">Start Consultation</button>
+            </div>
+          </form>
+
+          <form id="endConsultationForm" class="grid gap-3 sm:grid-cols-2">
+            <input name="consultationId" type="number" min="1" placeholder="Consultation ID" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400" />
+            <textarea name="notes" rows="2" placeholder="Session notes / instructions" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400"></textarea>
+            <div class="sm:col-span-2">
+              <button type="submit" class="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500">End Consultation</button>
+            </div>
+          </form>
+        </div>
+      </article>
+
+      <article class="rounded-3xl border border-sky-100 bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-950">Patient Medical Records Access</h2>
+        <p class="mt-1 text-sm text-slate-600">Create records, add diagnosis notes, and prescribe medication from one place.</p>
+        <form id="medicalRecordForm" class="mt-4 grid gap-3 sm:grid-cols-2">
+          <select name="patientId" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400">
+            <option value="">Select patient</option>
+            {{#each patientOptions}}
+              <option value="{{id}}">{{name}}</option>
+            {{/each}}
+          </select>
+          <input name="appointmentId" type="number" min="1" placeholder="Appointment ID" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400" />
+          <textarea name="diagnosis" rows="2" placeholder="Diagnosis" class="sm:col-span-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400"></textarea>
+          <textarea name="treatment" rows="2" placeholder="Treatment plan" class="sm:col-span-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400"></textarea>
+          <textarea name="notes" rows="2" placeholder="Clinical notes" class="sm:col-span-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400"></textarea>
+          <select name="consultationType" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400">
+            <option value="in-person">In-person</option>
+            <option value="chat">Chat</option>
+            <option value="video">Video</option>
+          </select>
+          <div class="sm:col-span-2">
+            <button type="submit" class="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-500">Save Medical Record</button>
+          </div>
+        </form>
+
+        <div class="mt-5 space-y-3">
+          {{#each recentRecords}}
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
+              <div class="flex items-center justify-between gap-2">
+                <p class="font-semibold text-slate-900">{{patientName}}</p>
+                <p class="text-xs text-slate-500">{{recordDateText}}</p>
+              </div>
+              <p class="mt-1 text-slate-600"><span class="font-semibold text-slate-700">Diagnosis:</span> {{diagnosis}}</p>
+              <p class="text-slate-600"><span class="font-semibold text-slate-700">Treatment:</span> {{treatment}}</p>
+            </div>
+          {{/each}}
+        </div>
+      </article>
+    </section>
+
+    <section class="grid gap-6 lg:grid-cols-2">
+      <article class="rounded-3xl border border-sky-100 bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-950">E-Prescription Management</h2>
+        <p class="mt-1 text-sm text-slate-600">Create digital prescriptions and keep a clean medication history.</p>
+        <form id="prescriptionForm" class="mt-4 grid gap-3 sm:grid-cols-2">
+          <select name="medicalRecordId" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400">
+            <option value="">Select medical record</option>
+            {{#each recentRecords}}
+              <option value="{{id}}">Record #{{id}} · {{patientName}}</option>
+            {{/each}}
+          </select>
+          <input name="medicationName" placeholder="Medication name" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400" />
+          <input name="dosage" placeholder="Dosage" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400" />
+          <select name="frequency" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400">
+            <option value="once daily">Once daily</option>
+            <option value="twice daily">Twice daily</option>
+            <option value="three times daily">Three times daily</option>
+            <option value="as needed">As needed</option>
+          </select>
+          <input name="duration" type="number" min="1" placeholder="Duration (days)" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400" />
+          <textarea name="instructions" rows="2" placeholder="Instructions" class="sm:col-span-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400"></textarea>
+          <div class="sm:col-span-2">
+            <button type="submit" class="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500">Create Prescription</button>
+          </div>
+        </form>
+
+        <div class="mt-5 space-y-3">
+          {{#each prescriptions}}
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
+              <div class="flex items-center justify-between gap-2">
+                <p class="font-semibold text-slate-900">{{medicationName}}</p>
+                <p class="text-xs text-slate-500">{{recordDateText}}</p>
+              </div>
+              <p class="mt-1 text-slate-600">{{dosage}} · {{frequency}} · {{duration}} days</p>
+              <p class="text-slate-600">{{instructions}}</p>
+            </div>
+          {{/each}}
+        </div>
+      </article>
+
+      <article class="rounded-3xl border border-sky-100 bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-950">Messaging System</h2>
+        <p class="mt-1 text-sm text-slate-600">Send follow-up messages to patients and keep the thread in one place.</p>
+        <form id="messageForm" class="mt-4 grid gap-3 sm:grid-cols-2">
+          <select name="patientId" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400">
+            <option value="">Select patient</option>
+            {{#each patientOptions}}
+              <option value="{{id}}">{{name}}</option>
+            {{/each}}
+          </select>
+          <textarea name="message" rows="3" placeholder="Type your follow-up message" class="sm:col-span-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-sky-400"></textarea>
+          <div class="sm:col-span-2">
+            <button type="submit" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800">Send Message</button>
+          </div>
+        </form>
+
+        <div class="mt-5 space-y-3">
+          {{#each messages}}
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
+              <div class="flex items-center justify-between gap-2">
+                <p class="font-semibold text-slate-900">{{patientName}}</p>
+                <p class="text-xs text-slate-500">{{createdAtText}}</p>
+              </div>
+              <p class="mt-1 text-slate-600">{{message}}</p>
+            </div>
+          {{/each}}
+        </div>
+      </article>
+    </section>
+
+    <section class="grid gap-6 lg:grid-cols-2">
+      <article class="rounded-3xl border border-sky-100 bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-950">Billing & Consultation Fees</h2>
+        <p class="mt-1 text-sm text-slate-600">Track fees, pending invoices, paid amounts, and transaction history.</p>
+        <div class="mt-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Total Earnings</p>
+            <p class="mt-1 text-2xl font-black text-slate-950">{{stats.totalEarnings}}</p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Pending</p>
+            <p class="mt-1 text-2xl font-black text-amber-600">{{stats.pendingEarnings}}</p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Paid</p>
+            <p class="mt-1 text-2xl font-black text-emerald-600">{{stats.paidEarnings}}</p>
+          </div>
+        </div>
+
+        <div class="mt-4 space-y-3">
+          {{#each billingHistory}}
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
+              <div class="flex items-center justify-between gap-2">
+                <p class="font-semibold text-slate-900">{{patientName}}</p>
+                <p class="text-xs text-slate-500">{{transactionDateText}}</p>
+              </div>
+              <p class="mt-1 text-slate-600">Amount: {{amount}} · Status: {{status}}</p>
+              <p class="text-slate-600">{{notes}}</p>
+            </div>
+          {{/each}}
+        </div>
+      </article>
+
+      <article class="rounded-3xl border border-sky-100 bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-950">Reports & Analytics</h2>
+        <p class="mt-1 text-sm text-slate-600">See your consultation trends and common cases at a glance.</p>
+        <div class="mt-4 grid gap-3 sm:grid-cols-3">
+          <div class="rounded-2xl bg-sky-50 p-4"><p class="text-xs uppercase tracking-wide text-slate-500">Daily</p><p class="mt-1 text-2xl font-black text-slate-950">{{stats.consultationsDaily}}</p></div>
+          <div class="rounded-2xl bg-sky-50 p-4"><p class="text-xs uppercase tracking-wide text-slate-500">Weekly</p><p class="mt-1 text-2xl font-black text-slate-950">{{stats.consultationsWeekly}}</p></div>
+          <div class="rounded-2xl bg-sky-50 p-4"><p class="text-xs uppercase tracking-wide text-slate-500">Monthly</p><p class="mt-1 text-2xl font-black text-slate-950">{{stats.consultationsMonthly}}</p></div>
+        </div>
+        <div class="mt-5 space-y-3">
+          {{#each commonCases}}
+            <div>
+              <div class="mb-1 flex items-center justify-between text-xs text-slate-600">
+                <span>{{label}}</span>
+                <span>{{count}}</span>
+              </div>
+              <div class="h-2 rounded-full bg-slate-100">
+                <div class="h-2 rounded-full bg-sky-600" style="width: calc({{count}} * 20%)"></div>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </article>
+    </section>
+
+    <section class="grid gap-6 lg:grid-cols-2">
+      <article class="rounded-3xl border border-sky-100 bg-white p-6 shadow-sm">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-bold text-slate-950">Notifications & Alerts</h2>
+            <p class="mt-1 text-sm text-slate-600">Stay updated on bookings, cancellations, and reminders.</p>
+          </div>
+          <div class="flex gap-2">
+            <button id="refreshNotificationsBtn" type="button" class="rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white">Refresh</button>
+            <button id="clearNotificationsBtn" type="button" class="rounded-xl bg-rose-600 px-3 py-2 text-sm font-semibold text-white">Clear</button>
+          </div>
+        </div>
+        <div id="notificationsList" class="mt-4 space-y-2">
+          {{#each notifications}}
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">{{title}} · {{message}}</div>
+          {{/each}}
+        </div>
+      </article>
+
+      <article class="rounded-3xl border border-sky-100 bg-white p-6 shadow-sm">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-bold text-slate-950">Records, Prescriptions, and Documents</h2>
+            <p class="mt-1 text-sm text-slate-600">Keep everything attached to the patient journey and your credentials stored safely.</p>
+          </div>
+          <div class="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700">{{stats.documentsCount}} docs</div>
+        </div>
+        <div class="mt-4 space-y-3">
+          {{#each documents}}
+            <div class="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
+              <div>
+                <p class="font-semibold text-slate-900">{{documentType}}</p>
+                <p class="text-slate-500">{{originalName}}</p>
+              </div>
+              <a href="{{filePath}}" target="_blank" class="rounded-lg bg-sky-600 px-3 py-1.5 text-xs font-semibold text-white">View</a>
+            </div>
+          {{/each}}
+        </div>
+      </article>
+    </section>
+
+    <section class="rounded-3xl border border-sky-100 bg-white p-6 shadow-sm">
+      <div class="flex items-center justify-between gap-2">
+        <div>
+          <h2 class="text-xl font-bold text-slate-950">Recent Appointments</h2>
+          <p class="mt-1 text-sm text-slate-600">Latest patient bookings and consultation activity.</p>
+        </div>
+        <button id="refreshOverviewInlineBtn" type="button" class="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Reload</button>
+      </div>
+      <div class="mt-4 grid gap-3 lg:grid-cols-2">
+        {{#each recentAppointments}}
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
+            <div class="flex items-center justify-between gap-2">
+              <p class="font-semibold text-slate-900">{{patientName}}</p>
+              <p class="text-xs text-slate-500">{{appointmentDateText}}</p>
+            </div>
+            <p class="mt-1 text-slate-600">Status: {{status}} · Type: {{consultationType}}</p>
+          </div>
+        {{/each}}
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const toast = document.getElementById("toast");
+    const scheduleBody = document.getElementById("scheduleBody");
+    const notificationsList = document.getElementById("notificationsList");
+
+    const showToast = (message, isError = false) => {
+      toast.textContent = message;
+      toast.classList.remove("hidden", "bg-emerald-600", "bg-red-600", "bg-slate-950");
+      toast.classList.add(isError ? "bg-red-600" : "bg-emerald-600");
+      window.setTimeout(() => toast.classList.add("hidden"), 2200);
+    };
+
+    const jsonFetch = async (url, options = {}) => {
+      const response = await fetch(url, options);
+      const payload = await response.json();
+      if (!response.ok || payload.success === false) {
+        throw new Error(payload.message || payload.error || "Request failed");
+      }
+      return payload;
+    };
+
+    const formToObject = (form) => Object.fromEntries(new FormData(form).entries());
+
+    const refreshOverview = async () => {
+      const payload = await jsonFetch("/api/doctor/overview");
+      document.getElementById("totalPatientsToday").textContent = payload.data.stats.totalPatientsToday;
+      document.getElementById("pendingConsultations").textContent = payload.data.stats.pendingConsultations;
+      document.getElementById("completedConsultations").textContent = payload.data.stats.completedConsultations;
+      document.getElementById("criticalAlerts").textContent = payload.data.stats.criticalAlerts;
+      document.getElementById("pageHeading").textContent = "Doctor Dashboard";
+    };
+
+    const refreshSchedule = async () => {
+      const payload = await jsonFetch("/api/doctor/schedule");
+      scheduleBody.innerHTML = "";
+      payload.data.forEach((item) => {
+        const row = document.createElement("tr");
+        row.dataset.id = item.id;
+        row.innerHTML = `
+          <td class="px-4 py-3 text-slate-600">${item.time}</td>
+          <td class="px-4 py-3 font-semibold text-slate-900">${item.patientName}</td>
+          <td class="px-4 py-3 text-slate-600">${item.notes || item.consultationType || "Consultation"}</td>
+          <td class="px-4 py-3"><span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 status-pill">${item.status}</span></td>
+          <td class="px-4 py-3">
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="status-action rounded-lg bg-sky-50 px-2.5 py-1.5 text-xs font-semibold text-sky-700" data-status="scheduled" data-id="${item.id}">Schedule</button>
+              <button type="button" class="status-action rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-semibold text-emerald-700" data-status="completed" data-id="${item.id}">Complete</button>
+              <button type="button" class="status-action rounded-lg bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-700" data-status="cancelled" data-id="${item.id}">Cancel</button>
+              <button type="button" class="start-consultation-btn rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-semibold text-white" data-id="${item.id}">Start</button>
+            </div>
+          </td>
+        `;
+        scheduleBody.appendChild(row);
+      });
+      showToast("Schedule refreshed");
+    };
+
+    const refreshNotifications = async () => {
+      const payload = await jsonFetch("/api/doctor/notifications");
+      notificationsList.innerHTML = "";
+      if (!payload.data.length) {
+        notificationsList.innerHTML = '<div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">No notifications.</div>';
+        return;
+      }
+      payload.data.forEach((item) => {
+        const div = document.createElement("div");
+        div.className = "rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700";
+        div.textContent = `${item.title || "Alert"} · ${item.message}`;
+        notificationsList.appendChild(div);
+      });
+      showToast("Notifications refreshed");
+    };
+
+    document.getElementById("refreshOverviewBtn").addEventListener("click", async () => {
+      try { await refreshOverview(); showToast("Overview refreshed"); } catch (error) { showToast(error.message, true); }
+    });
+
+    document.getElementById("refreshScheduleBtn").addEventListener("click", async () => {
+      try { await refreshSchedule(); } catch (error) { showToast(error.message, true); }
+    });
+
+    document.getElementById("refreshScheduleInlineBtn").addEventListener("click", async () => {
+      try { await refreshSchedule(); } catch (error) { showToast(error.message, true); }
+    });
+
+    document.getElementById("refreshNotificationsBtn").addEventListener("click", async () => {
+      try { await refreshNotifications(); } catch (error) { showToast(error.message, true); }
+    });
+
+    document.getElementById("clearNotificationsBtn").addEventListener("click", async () => {
+      try {
+        await jsonFetch("/api/doctor/notifications/clear", { method: "POST" });
+        await refreshNotifications();
+        showToast("Notifications cleared");
+      } catch (error) { showToast(error.message, true); }
+    });
+
+    document.getElementById("profileForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        const payload = formToObject(event.currentTarget);
+        await jsonFetch("/doctor/profile", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        showToast("Profile saved");
+        await refreshOverview();
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    document.getElementById("documentForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        const formData = new FormData(event.currentTarget);
+        await jsonFetch("/doctor/documents", { method: "POST", body: formData });
+        showToast("Document uploaded");
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    document.getElementById("availabilityForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        const payload = formToObject(event.currentTarget);
+        await jsonFetch("/doctor/availability", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        showToast("Availability saved");
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    document.getElementById("medicalRecordForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        const payload = formToObject(event.currentTarget);
+        await jsonFetch("/medical-record", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        showToast("Medical record saved");
+        event.currentTarget.reset();
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    document.getElementById("prescriptionForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        const payload = formToObject(event.currentTarget);
+        await jsonFetch("/prescription", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        showToast("Prescription created");
+        event.currentTarget.reset();
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    document.getElementById("messageForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        const payload = formToObject(event.currentTarget);
+        await jsonFetch("/doctor/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        showToast("Message sent");
+        event.currentTarget.reset();
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    document.getElementById("startConsultationForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        const payload = formToObject(event.currentTarget);
+        await jsonFetch("/consultation/start", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        showToast("Consultation started");
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    document.getElementById("endConsultationForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        const payload = formToObject(event.currentTarget);
+        await jsonFetch("/consultation/end", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        showToast("Consultation completed");
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    document.querySelector("#scheduleBody").addEventListener("click", async (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+
+      if (target.classList.contains("status-action")) {
+        try {
+          const appointmentId = target.getAttribute("data-id");
+          const status = target.getAttribute("data-status");
+          await jsonFetch(`/api/doctor/appointments/${appointmentId}/status`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status })
+          });
+          await refreshSchedule();
+          await refreshOverview();
+          showToast("Appointment updated");
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      }
+
+      if (target.classList.contains("start-consultation-btn")) {
+        const appointmentId = target.getAttribute("data-id");
+        if (!appointmentId) return;
+        try {
+          await jsonFetch("/consultation/start", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ appointmentId, consultationType: "video" })
+          });
+          showToast("Consultation started");
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      }
+    });
+
+    document.querySelectorAll(".delete-availability-btn").forEach((button) => {
+      button.addEventListener("click", async () => {
+        try {
+          await jsonFetch(`/doctor/availability/${button.getAttribute("data-id")}`, { method: "DELETE" });
+          button.closest("div")?.remove();
+          showToast("Availability deleted");
+        } catch (error) {
+          showToast(error.message, true);
+        }
+      });
+    });
+
+    document.getElementById("refreshOverviewInlineBtn").addEventListener("click", async () => {
+      try { await refreshOverview(); showToast("Overview refreshed"); } catch (error) { showToast(error.message, true); }
+    });
+  </script>
+{{> footer }}

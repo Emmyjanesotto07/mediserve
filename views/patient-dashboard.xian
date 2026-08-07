@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50 shadow-sm">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">M</div>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Mediserve</h1>
+          <p class="text-xs text-gray-500">{{patient.name}}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <button id="notificationBell" class="text-gray-600 hover:text-gray-900 relative">
+          <i class="fas fa-bell"></i>
+          <span id="notificationBadge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+        </button>
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-sm font-semibold">
+          {{#if patient.profilePicture}}
+            <img src="{{patient.profilePicture}}" alt="{{patient.name}}" class="w-10 h-10 rounded-full object-cover">
+          {{else}}
+            {{patient.name.[0]}}
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r border-gray-200 p-6 h-[calc(100vh-80px)] overflow-y-auto">
+      <nav class="space-y-1">
+        <a href="/patient-dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium bg-blue-50 text-blue-600 border-l-4 border-blue-600">
+          <i class="fas fa-home w-5"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#section-doctor-search" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-stethoscope w-5"></i>
+          <span>Find Doctors</span>
+        </a>
+        <a href="#section-appointments" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-calendar w-5"></i>
+          <span>Appointments</span>
+          {{#if stats.upcomingAppointments}}
+            <span class="ml-auto bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{{stats.upcomingAppointments}}</span>
+          {{/if}}
+        </a>
+        <a href="#section-consultations" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-video w-5"></i>
+          <span>Consultations</span>
+        </a>
+        <a href="#section-prescriptions" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-prescription-bottle w-5"></i>
+          <span>Prescriptions</span>
+        </a>
+        <a href="#section-medical-records" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-file-medical w-5"></i>
+          <span>Medical Records</span>
+        </a>
+        <a href="#section-messages" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-comments w-5"></i>
+          <span>Messages</span>
+          {{#if stats.unreadMessages}}
+            <span class="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{{stats.unreadMessages}}</span>
+          {{/if}}
+        </a>
+        <a href="#section-payments" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-credit-card w-5"></i>
+          <span>Payments</span>
+        </a>
+        <hr class="my-4 border-gray-200">
+        <a href="/profile" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-user-circle w-5"></i>
+          <span>Profile Settings</span>
+        </a>
+        <a href="/logout" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-50 hover:text-red-600 transition text-gray-700">
+          <i class="fas fa-sign-out-alt w-5"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+      <!-- Statistics Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm">Upcoming Appointments</p>
+              <p class="text-3xl font-bold text-blue-600">{{stats.upcomingAppointments}}</p>
+            </div>
+            <i class="fas fa-calendar text-blue-500 text-3xl opacity-20"></i>
+          </div>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm">Total Consultations</p>
+              <p class="text-3xl font-bold text-green-600">{{stats.totalConsultations}}</p>
+            </div>
+            <i class="fas fa-video text-green-500 text-3xl opacity-20"></i>
+          </div>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm">Prescriptions</p>
+              <p class="text-3xl font-bold text-purple-600">{{stats.totalPrescriptions}}</p>
+            </div>
+            <i class="fas fa-prescription-bottle text-purple-500 text-3xl opacity-20"></i>
+          </div>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm">Pending Payments</p>
+              <p class="text-3xl font-bold text-orange-600">{{stats.pendingPayments}}</p>
+            </div>
+            <i class="fas fa-credit-card text-orange-500 text-3xl opacity-20"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. Profile & Medical Information -->
+      <section id="section-profile" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <i class="fas fa-user-circle text-blue-600"></i>
+          Profile & Medical Information
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
+            <input type="number" id="age" value="{{patient.age}}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+            <select id="gender" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">Select</option>
+              <option value="male" {{#if patient.gender 'male'}}selected{{/if}}>Male</option>
+              <option value="female" {{#if patient.gender 'female'}}selected{{/if}}>Female</option>
+              <option value="other" {{#if patient.gender 'other'}}selected{{/if}}>Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Blood Type</label>
+            <select id="bloodType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">Select</option>
+              <option value="A+" {{#if patient.bloodType 'A+'}}selected{{/if}}>A+</option>
+              <option value="A-" {{#if patient.bloodType 'A-'}}selected{{/if}}>A-</option>
+              <option value="B+" {{#if patient.bloodType 'B+'}}selected{{/if}}>B+</option>
+              <option value="B-" {{#if patient.bloodType 'B-'}}selected{{/if}}>B-</option>
+              <option value="AB+" {{#if patient.bloodType 'AB+'}}selected{{/if}}>AB+</option>
+              <option value="AB-" {{#if patient.bloodType 'AB-'}}selected{{/if}}>AB-</option>
+              <option value="O+" {{#if patient.bloodType 'O+'}}selected{{/if}}>O+</option>
+              <option value="O-" {{#if patient.bloodType 'O-'}}selected{{/if}}>O-</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <input type="tel" id="phone" value="{{patient.phone}}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+            <input type="text" id="address" value="{{patient.address}}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Allergies</label>
+            <textarea id="allergies" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{patient.allergies}}</textarea>
+          </div>
+        </div>
+        <button id="btnSaveProfile" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+          <i class="fas fa-save mr-2"></i>Save Profile
+        </button>
+
+        <!-- Medical History -->
+        <div class="mt-6 pt-6 border-t border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Medical History</h3>
+          <div id="medicalHistoryList" class="space-y-2">
+            {{#each medicalHistory}}
+              <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="font-medium text-gray-800">{{this.recordType}}</p>
+                    <p class="text-sm text-gray-600">{{this.description}}</p>
+                    {{#if this.severity}}<p class="text-xs text-gray-500">Severity: {{this.severity}}</p>{{/if}}
+                  </div>
+                  <span class="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded">{{this.status}}</span>
+                </div>
+              </div>
+            {{/each}}
+          </div>
+          <div class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h4 class="font-medium text-gray-800 mb-3">Add Medical History</h4>
+            <div class="space-y-3">
+              <select id="recordType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="">Select Type</option>
+                <option value="condition">Condition</option>
+                <option value="illness">Illness</option>
+                <option value="allergy">Allergy</option>
+                <option value="surgery">Surgery</option>
+                <option value="medication">Medication</option>
+                <option value="vaccination">Vaccination</option>
+              </select>
+              <textarea id="historyDescription" placeholder="Description" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+              <button id="btnAddHistory" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                <i class="fas fa-plus mr-2"></i>Add Medical History
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Doctor Search & Selection -->
+      <section id="section-doctor-search" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <i class="fas fa-stethoscope text-green-600"></i>
+          Find Your Doctor
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <input type="text" id="doctorSearch" placeholder="Search by name..." class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          <select id="specializationFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="">All Specializations</option>
+            {{#each availableDoctors}}
+              <option value="{{this.specialization}}">{{this.specialization}}</option>
+            {{/each}}
+          </select>
+          <button id="btnSearchDoctors" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            <i class="fas fa-search mr-2"></i>Search
+          </button>
+        </div>
+
+        <div id="doctorsList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {{#each availableDoctors}}
+            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition">
+              <div class="flex items-start justify-between mb-2">
+                <div>
+                  <h3 class="font-semibold text-gray-800">Dr. {{this.name}}</h3>
+                  <p class="text-sm text-gray-600">{{this.specialization}}</p>
+                </div>
+                <div class="text-yellow-400">
+                  <i class="fas fa-star"></i>
+                  <span class="text-gray-800 ml-1">{{this.rating}}</span>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 mb-3">Experience: {{this.experience}} years</p>
+              {{#if this.consultationFee}}
+                <p class="font-semibold text-gray-800 mb-3">PHP {{this.consultationFee}}/consultation</p>
+              {{/if}}
+              <button class="w-full bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition selectDoctorBtn" data-doctor-id="{{this.id}}" data-doctor-name="{{this.name}}">
+                <i class="fas fa-calendar-check mr-2"></i>Book Appointment
+              </button>
+            </div>
+          {{/each}}
+        </div>
+      </section>
+
+      <!-- 3. Appointment Booking -->
+      <section id="section-appointments" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <i class="fas fa-calendar text-purple-600"></i>
+          Appointments
+        </h2>
+
+        <!-- Booking Form -->
+        <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <h3 class="font-semibold text-gray-800 mb-3">Book New Appointment</h3>
+          <div class="space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Select Doctor</label>
+                <select id="bookingDoctor" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                  <option value="">Choose a doctor</option>
+                  {{#each availableDoctors}}
+                    <option value="{{this.id}}">Dr. {{this.name}} - {{this.specialization}}</option>
+                  {{/each}}
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Appointment Date & Time</label>
+                <input type="datetime-local" id="appointmentDateTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Consultation Type</label>
+                <select id="consultationType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                  <option value="video">Video Call</option>
+                  <option value="audio">Audio Call</option>
+                  <option value="chat">Chat</option>
+                  <option value="in-person">In-Person</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Symptoms/Reason</label>
+                <input type="text" id="appointmentReason" placeholder="e.g., Flu symptoms, Checkup" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              </div>
+            </div>
+            <textarea id="appointmentSymptoms" placeholder="Describe your symptoms or reason for visit..." rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+            <button id="btnBookAppointment" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+              <i class="fas fa-calendar-check mr-2"></i>Book Appointment
+            </button>
+          </div>
+        </div>
+
+        <!-- Upcoming Appointments -->
+        <h3 class="font-semibold text-gray-800 mb-3">Your Appointments</h3>
+        <div id="appointmentsList" class="space-y-3">
+          {{#each upcomingAppointments}}
+            <div class="p-4 border border-gray-200 rounded-lg flex items-center justify-between hover:bg-gray-50">
+              <div class="flex-1">
+                <h4 class="font-medium text-gray-800">Dr. {{this.Doctor.name}}</h4>
+                <p class="text-sm text-gray-600">{{this.Doctor.specialization}}</p>
+                <p class="text-sm text-gray-500">{{this.appointmentDate}}</p>
+                <p class="text-xs text-gray-500 mt-1">Type: {{this.consultationType}}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">{{this.status}}</span>
+                {{#if this.status 'in-progress'}}
+                  <button class="joinConsultationBtn bg-green-600 text-white px-3 py-1 rounded-lg hover:bg-green-700 transition text-sm" data-appointment-id="{{this.id}}">
+                    <i class="fas fa-video mr-1"></i>Join
+                  </button>
+                {{/if}}
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </section>
+
+      <!-- 4. Online Consultation -->
+      <section id="section-consultations" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <i class="fas fa-video text-red-600"></i>
+          Active Consultations
+        </h2>
+        <div id="consultationsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {{#each activeConsultations}}
+            <div class="p-4 bg-gradient-to-br from-red-50 to-pink-50 border border-red-200 rounded-lg">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-semibold text-gray-800">Dr. {{this.Doctor.name}}</h3>
+                <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full font-semibold">LIVE</span>
+              </div>
+              <p class="text-sm text-gray-600 mb-3">{{this.Doctor.specialization}}</p>
+              <button class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition joinMeetingBtn" data-consultation-id="{{this.id}}">
+                <i class="fas fa-video mr-2"></i>Join Consultation
+              </button>
+            </div>
+          {{/each}}
+          {{#if activeConsultations.length == 0}}
+            <p class="col-span-2 text-center text-gray-600 py-8">No active consultations</p>
+          {{/if}}
+        </div>
+      </section>
+
+      <!-- 5. E-Prescription Access -->
+      <section id="section-prescriptions" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <i class="fas fa-prescription-bottle text-blue-600"></i>
+          Prescriptions
+        </h2>
+        <div id="prescriptionsList" class="space-y-3">
+          {{#each prescriptions}}
+            <div class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <h4 class="font-semibold text-gray-800">{{this.medication}}</h4>
+                  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-sm text-gray-600">
+                    <div><span class="font-medium">Dosage:</span> {{this.dosage}}</div>
+                    <div><span class="font-medium">Frequency:</span> {{this.frequency}}</div>
+                    <div><span class="font-medium">Duration:</span> {{this.duration}}</div>
+                    <div><span class="font-medium">Date:</span> {{this.prescribedDate}}</div>
+                  </div>
+                  {{#if this.instructions}}
+                    <p class="mt-2 text-sm text-gray-600"><span class="font-medium">Instructions:</span> {{this.instructions}}</p>
+                  {{/if}}
+                </div>
+                <div class="flex gap-2 ml-4">
+                  <button class="downloadPrescriptionBtn bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition text-sm" data-prescription-id="{{this.id}}">
+                    <i class="fas fa-download mr-1"></i>Download
+                  </button>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </section>
+
+      <!-- 6. Medical Records Access -->
+      <section id="section-medical-records" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <i class="fas fa-file-medical text-green-600"></i>
+          Medical Records
+        </h2>
+
+        <!-- Upload Medical Documents -->
+        <div class="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
+          <h3 class="font-semibold text-gray-800 mb-3">Upload Medical Document</h3>
+          <div class="space-y-3">
+            <select id="documentType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="">Select Document Type</option>
+              <option value="lab_result">Lab Result</option>
+              <option value="prescription">Prescription</option>
+              <option value="report">Medical Report</option>
+              <option value="scan">Scan/X-ray</option>
+              <option value="vaccination">Vaccination Record</option>
+              <option value="other">Other</option>
+            </select>
+            <textarea id="documentDescription" placeholder="Description (optional)" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+            <input type="file" id="medicalDocumentFile" accept=".pdf,.jpg,.jpeg,.png" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <button id="btnUploadDocument" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+              <i class="fas fa-upload mr-2"></i>Upload Document
+            </button>
+          </div>
+        </div>
+
+        <!-- Medical Records List -->
+        <h3 class="font-semibold text-gray-800 mb-3">Consultation History</h3>
+        <div id="medicalRecordsList" class="space-y-3">
+          {{#each recentRecords}}
+            <div class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <h4 class="font-semibold text-gray-800">Consultation Record</h4>
+                  <p class="text-sm text-gray-600 mt-1">{{this.recordDate}}</p>
+                  {{#if this.diagnosis}}
+                    <p class="text-sm text-gray-700 mt-2"><span class="font-medium">Diagnosis:</span> {{this.diagnosis}}</p>
+                  {{/if}}
+                  {{#if this.treatment}}
+                    <p class="text-sm text-gray-700"><span class="font-medium">Treatment:</span> {{this.treatment}}</p>
+                  {{/if}}
+                </div>
+                <button class="downloadRecordBtn bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition text-sm" data-record-id="{{this.id}}">
+                  <i class="fas fa-download mr-1"></i>Download
+                </button>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+
+        <!-- Uploaded Documents -->
+        <h3 class="font-semibold text-gray-800 mt-6 mb-3">My Documents</h3>
+        <div id="documentsList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {{#each patientDocuments}}
+            <div class="p-4 border border-gray-200 rounded-lg hover:shadow-lg transition">
+              <div class="flex items-start justify-between mb-2">
+                <h4 class="font-medium text-gray-800">{{this.documentType}}</h4>
+                <span class="text-xs text-gray-500">{{this.uploadedAt}}</span>
+              </div>
+              <p class="text-sm text-gray-600">{{this.originalName}}</p>
+              {{#if this.description}}
+                <p class="text-xs text-gray-500 mt-2">{{this.description}}</p>
+              {{/if}}
+              <a href="{{this.filePath}}" download class="mt-3 block text-center bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition text-sm">
+                <i class="fas fa-download mr-1"></i>Download
+              </a>
+            </div>
+          {{/each}}
+        </div>
+      </section>
+
+      <!-- 7. Notifications & Reminders -->
+      <section id="section-notifications" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <i class="fas fa-bell text-yellow-600"></i>
+          Notifications & Reminders
+        </h2>
+        <div id="notificationsList" class="space-y-2">
+          {{#each notifications}}
+            <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start justify-between">
+              <div class="flex-1">
+                <p class="font-medium text-gray-800">{{this.message}}</p>
+                <p class="text-xs text-gray-500 mt-1">{{this.createdAt}}</p>
+              </div>
+              {{#unless this.isRead}}
+                <button class="markNotificationReadBtn text-blue-600 hover:text-blue-800 text-sm" data-notification-id="{{this.id}}">Mark Read</button>
+              {{/unless}}
+            </div>
+          {{/each}}
+        </div>
+      </section>
+
+      <!-- 8. Messaging System -->
+      <section id="section-messages" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <i class="fas fa-comments text-cyan-600"></i>
+          Messages with Doctors
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="md:col-span-1 border-r border-gray-200 pr-4">
+            <h3 class="font-semibold text-gray-800 mb-3">Conversations</h3>
+            <div id="doctorsList" class="space-y-2">
+              {{#each upcomingAppointments}}
+                <button class="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition selectDoctorMessageBtn border border-gray-200" data-doctor-id="{{this.doctorId}}">
+                  <p class="font-medium text-gray-800">Dr. {{this.Doctor.name}}</p>
+                  <p class="text-xs text-gray-600">{{this.Doctor.specialization}}</p>
+                </button>
+              {{/each}}
+            </div>
+          </div>
+          <div class="md:col-span-2">
+            <div id="messagesContainer" class="bg-gray-50 p-4 rounded-lg h-80 overflow-y-auto mb-4 border border-gray-200">
+              <p class="text-center text-gray-600">Select a doctor to view messages</p>
+            </div>
+            <div id="messageInputBox" class="hidden">
+              <input type="hidden" id="selectedDoctorId">
+              <div class="flex gap-2">
+                <textarea id="messageInput" placeholder="Type your message..." rows="2" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                <button id="btnSendMessage" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition h-fit">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. Billing & Payment -->
+      <section id="section-payments" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <i class="fas fa-credit-card text-orange-600"></i>
+          Billing & Payment
+        </h2>
+
+        <!-- Pending Payments -->
+        {{#if pendingPayments.length}}
+          <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <h3 class="font-semibold text-gray-800 mb-3">Pending Payments</h3>
+            <div id="pendingPaymentsList" class="space-y-3">
+              {{#each pendingPayments}}
+                <div class="p-3 bg-white rounded-lg flex items-center justify-between">
+                  <div>
+                    <p class="font-medium text-gray-800">Consultation Fee</p>
+                    <p class="text-sm text-gray-600">{{this.description}}</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="font-bold text-lg">{{this.currency}} {{this.amount}}</span>
+                    <button class="paymentBtn bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition" data-payment-id="{{this.id}}">
+                      <i class="fas fa-money-bill mr-2"></i>Pay
+                    </button>
+                  </div>
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        {{/if}}
+
+        <!-- Payment History -->
+        <h3 class="font-semibold text-gray-800 mb-3">Payment History</h3>
+        <div id="paymentHistoryList" class="space-y-2">
+          <!-- Table or List -->
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-gray-100 border-b border-gray-200">
+                <th class="text-left px-3 py-2 font-medium text-gray-800">Date</th>
+                <th class="text-left px-3 py-2 font-medium text-gray-800">Doctor</th>
+                <th class="text-left px-3 py-2 font-medium text-gray-800">Amount</th>
+                <th class="text-left px-3 py-2 font-medium text-gray-800">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each getPaymentHistory}}
+                <tr class="border-b border-gray-200 hover:bg-gray-50">
+                  <td class="px-3 py-2 text-sm">{{this.transactionDate}}</td>
+                  <td class="px-3 py-2 text-sm">Dr. {{this.Doctor.name}}</td>
+                  <td class="px-3 py-2 text-sm font-medium">{{this.currency}} {{this.amount}}</td>
+                  <td class="px-3 py-2">
+                    <span class="px-2 py-1 text-xs rounded-full font-medium {{#if this.status 'completed'}}bg-green-100 text-green-800{{else if this.status 'pending'}}bg-yellow-100 text-yellow-800{{else}}bg-red-100 text-red-800{{/if}}">
+                      {{this.status}}
+                    </span>
+                  </td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 10. Health Analytics -->
+      <section id="section-analytics" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <i class="fas fa-chart-line text-purple-600"></i>
+          Health Analytics & Progress
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-3">Consultation Trends</h3>
+            <canvas id="consultationChart"></canvas>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-3">Visits by Specialization</h3>
+            <canvas id="specializationChart"></canvas>
+          </div>
+        </div>
+        <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <h3 class="font-semibold text-gray-800 mb-2">Health Summary</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div>
+              <p class="text-2xl font-bold text-blue-600">{{stats.totalAppointments}}</p>
+              <p class="text-sm text-gray-600">Total Appointments</p>
+            </div>
+            <div>
+              <p class="text-2xl font-bold text-green-600">{{stats.completedAppointments}}</p>
+              <p class="text-sm text-gray-600">Completed</p>
+            </div>
+            <div>
+              <p class="text-2xl font-bold text-purple-600">{{stats.totalPrescriptions}}</p>
+              <p class="text-sm text-gray-600">Prescriptions</p>
+            </div>
+            <div>
+              <p class="text-2xl font-bold text-orange-600">{{stats.totalConsultations}}</p>
+              <p class="text-sm text-gray-600">Total Consultations</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // API Base URL
+    const API_BASE = '/patient';
+
+    // Profile Management
+    document.getElementById('btnSaveProfile')?.addEventListener('click', async () => {
+      try {
+        const response = await fetch(`${API_BASE}/profile`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            age: document.getElementById('age').value,
+            gender: document.getElementById('gender').value,
+            bloodType: document.getElementById('bloodType').value,
+            phone: document.getElementById('phone').value,
+            address: document.getElementById('address').value,
+            allergies: document.getElementById('allergies').value
+          })
+        });
+        const result = await response.json();
+        if (result.success) alert('Profile updated successfully');
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to update profile');
+      }
+    });
+
+    // Add Medical History
+    document.getElementById('btnAddHistory')?.addEventListener('click', async () => {
+      try {
+        const response = await fetch(`${API_BASE}/medical-history`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recordType: document.getElementById('recordType').value,
+            description: document.getElementById('historyDescription').value,
+            severity: 'mild'
+          })
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert('Medical history added');
+          location.reload();
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to add medical history');
+      }
+    });
+
+    // Book Appointment
+    document.getElementById('btnBookAppointment')?.addEventListener('click', async () => {
+      try {
+        const response = await fetch(`${API_BASE}/book-appointment`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            doctorId: document.getElementById('bookingDoctor').value,
+            appointmentDate: document.getElementById('appointmentDateTime').value,
+            consultationType: document.getElementById('consultationType').value,
+            symptoms: document.getElementById('appointmentSymptoms').value,
+            reason: document.getElementById('appointmentReason').value
+          })
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert('Appointment booked successfully');
+          location.reload();
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to book appointment');
+      }
+    });
+
+    // Join Consultation
+    document.querySelectorAll('.joinConsultationBtn')?.forEach(btn => {
+      btn.addEventListener('click', async function() {
+        try {
+          const appointmentId = this.dataset.appointmentId;
+          const response = await fetch(`${API_BASE}/consultation/join/${appointmentId}`, {
+            method: 'POST'
+          });
+          const result = await response.json();
+          if (result.success) {
+            window.open(result.meetingLink, '_blank');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Failed to join consultation');
+        }
+      });
+    });
+
+    // Upload Document
+    document.getElementById('btnUploadDocument')?.addEventListener('click', async () => {
+      const formData = new FormData();
+      formData.append('documentType', document.getElementById('documentType').value);
+      formData.append('description', document.getElementById('documentDescription').value);
+      formData.append('medicalDocument', document.getElementById('medicalDocumentFile').files[0]);
+
+      try {
+        const response = await fetch(`${API_BASE}/documents`, {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert('Document uploaded successfully');
+          location.reload();
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to upload document');
+      }
+    });
+
+    // Send Message
+    document.getElementById('btnSendMessage')?.addEventListener('click', async () => {
+      try {
+        const response = await fetch(`${API_BASE}/message`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            doctorId: document.getElementById('selectedDoctorId').value,
+            message: document.getElementById('messageInput').value,
+            messageType: 'text'
+          })
+        });
+        const result = await response.json();
+        if (result.success) {
+          document.getElementById('messageInput').value = '';
+          // Reload messages
+          loadMessages();
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to send message');
+      }
+    });
+
+    // Make Payment
+    document.querySelectorAll('.paymentBtn')?.forEach(btn => {
+      btn.addEventListener('click', async function() {
+        const paymentId = this.dataset.paymentId;
+        try {
+          const response = await fetch(`${API_BASE}/payment`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              transactionId: paymentId,
+              paymentMethod: 'online_banking'
+            })
+          });
+          const result = await response.json();
+          if (result.success) {
+            alert('Payment processed successfully');
+            location.reload();
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Failed to process payment');
+        }
+      });
+    });
+
+    // Chart initialization
+    const ctxConsultation = document.getElementById('consultationChart')?.getContext('2d');
+    if (ctxConsultation) {
+      new Chart(ctxConsultation, {
+        type: 'line',
+        data: {
+          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+          datasets: [{
+            label: 'Consultations',
+            data: [{{stats.totalConsultations}}, {{stats.totalConsultations}}, 0, 0],
+            borderColor: 'rgb(99, 102, 241)',
+            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+            fill: true
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+    }
+  </script>
+</body>
+</html>
+          <div>
+            <p class="font-semibold">Consultation Request Sent</p>
+            <p class="text-sm">The doctor has been notified. You will receive updates soon.</p>
+          </div>
+        </section>
+      {{/if}}
+
+      <!-- Quick Stats Cards -->
+      <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <p class="text-xs text-gray-500 font-semibold uppercase mb-2">Upcoming</p>
+          <p class="text-3xl font-bold text-blue-600">{{stats.upcomingAppointments}}</p>
+          <p class="text-xs text-gray-500 mt-2">Appointments</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <p class="text-xs text-gray-500 font-semibold uppercase mb-2">Total</p>
+          <p class="text-3xl font-bold text-green-600">{{stats.totalAppointments}}</p>
+          <p class="text-xs text-gray-500 mt-2">All Appointments</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <p class="text-xs text-gray-500 font-semibold uppercase mb-2">Completed</p>
+          <p class="text-3xl font-bold text-purple-600">{{stats.completedAppointments}}</p>
+          <p class="text-xs text-gray-500 mt-2">Consultations</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <p class="text-xs text-gray-500 font-semibold uppercase mb-2">Records</p>
+          <p class="text-3xl font-bold text-orange-600">{{stats.medicalRecords}}</p>
+          <p class="text-xs text-gray-500 mt-2">Medical Records</p>
+        </div>
+      </section>
+
+      <!-- Health Metrics Section -->
+      <section class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <i class="fas fa-chart-line text-gray-600"></i>
+              </div>
+              <h2 class="text-2xl font-bold text-gray-900">Blood Sugar</h2>
+            </div>
+            <p class="text-sm text-gray-500 mt-1">Health Vital Metrics</p>
+          </div>
+          <div class="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-lg">
+            <i class="fas fa-sliders-h text-gray-600"></i>
+            <span class="text-sm font-semibold text-gray-700">MG / D</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <!-- Recent Reading -->
+          <div>
+            <p class="text-sm text-gray-500 font-medium mb-2">Recent Reading</p>
+            <div class="flex items-baseline gap-2">
+              <span class="text-4xl font-bold text-gray-900">50.0</span>
+              <span class="text-lg text-gray-500">mg/dl</span>
+            </div>
+            <p class="text-xs text-gray-400 mt-2">Updated 2 hours ago</p>
+          </div>
+
+          <!-- 7 Day Average -->
+          <div>
+            <p class="text-sm text-gray-500 font-medium mb-2">7 Day Average</p>
+            <div class="flex items-baseline gap-2">
+              <span class="text-4xl font-bold text-gray-900">89.1</span>
+              <span class="text-lg text-gray-500">mg/dl</span>
+            </div>
+            <p class="text-xs text-gray-400 mt-2">Last 7 days</p>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="relative" style="height: 300px;">
+          <canvas id="bloodSugarChart"></canvas>
+        </div>
+      </section>
+
+
+    </main>
+  </div>
+
+  <script>
+    // Blood Sugar Chart
+    const ctx = document.getElementById('bloodSugarChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Jul 24', 'Jul 25', 'Jul 26', 'Jul 27', 'Jul 28', 'Jul 29', 'Jul 30', 'Jul 31', 'Aug 01', 'Aug 02'],
+        datasets: [
+          {
+            label: 'Normal Range',
+            data: [60, 40, 50, 45, 50, 20, 15, 45, 40, 35],
+            backgroundColor: 'rgba(59, 130, 246, 0.5)',
+            borderColor: 'rgb(59, 130, 246)',
+            borderWidth: 0,
+            barPercentage: 0.8,
+            categoryPercentage: 0.9
+          },
+          {
+            label: 'High Range',
+            data: [0, 10, 0, 5, 35, 90, 105, 20, 25, 30],
+            backgroundColor: 'rgba(239, 68, 68, 0.6)',
+            borderColor: 'rgb(239, 68, 68)',
+            borderWidth: 0,
+            barPercentage: 0.8,
+            categoryPercentage: 0.9
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            padding: 12,
+            titleFont: { size: 14, weight: 'bold' },
+            bodyFont: { size: 13 }
+          }
+        },
+        scales: {
+          x: {
+            stacked: true,
+            grid: {
+              display: true,
+              color: 'rgba(0, 0, 0, 0.05)',
+              drawBorder: false
+            },
+            ticks: {
+              color: 'rgb(107, 114, 128)',
+              font: { size: 12 }
+            }
+          },
+          y: {
+            stacked: true,
+            beginAtZero: true,
+            max: 120,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)',
+              drawBorder: false
+            },
+            ticks: {
+              color: 'rgb(107, 114, 128)',
+              font: { size: 12 },
+              stepSize: 40
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+  <script>
+  </script>
+</body>
+</html>

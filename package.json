@@ -1,0 +1,36 @@
+{
+  "name": "Mediserve",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "xian-start": "node index.js",
+    "xian": "nodemon index.js",
+    "migrate": "node migrate.js",
+    "create:model": "node create.js model",
+    "create:controller": "node create.js controller"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
+    "express-session": "^1.17.3",
+    "hbs": "^4.2.0",
+    "inquirer": "^9.2.15",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.9.2",
+    "nodemailer": "^8.0.5",
+    "sequelize": "^6.37.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "flowbite": "^4.0.1",
+    "nodemon": "^3.1.11",
+    "postcss": "^8.5.10",
+    "tailwindcss": "^4.2.2"
+  }
+}

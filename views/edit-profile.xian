@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+  <header class="bg-blue-600 text-white p-4 shadow-lg">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-bold">MEDISERVE</h1>
+        <p class="text-sm text-blue-100">Edit Profile</p>
+      </div>
+      <nav class="space-x-4 text-sm">
+        <a href="/patient-dashboard" class="hover:underline">Dashboard</a>
+        <a href="/" class="hover:underline">Home</a>
+        <a href="/logout" class="hover:underline font-semibold">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-6">
+    <!-- Success/Error Messages -->
+    {{#if success_msg}}
+      <div class="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
+        <p class="text-green-700 text-sm flex items-center">
+          <i class="fas fa-check-circle mr-2"></i>
+          {{success_msg}}
+        </p>
+      </div>
+    {{/if}}
+
+    {{#if error_msg}}
+      <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
+        <p class="text-red-700 text-sm flex items-center">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          {{error_msg}}
+        </p>
+      </div>
+    {{/if}}
+
+    <!-- Edit Profile Form -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Your Profile</h2>
+
+      <form method="POST" action="/profile" enctype="multipart/form-data" class="space-y-6">
+        
+        <!-- Profile Picture Section -->
+        <div class="border-b pb-6">
+          <h3 class="text-lg font-semibold text-gray-700 mb-4">Profile Picture</h3>
+          <div class="flex items-start gap-6">
+            <!-- Current Picture Display -->
+            <div class="flex flex-col items-center">
+              {{#if patient.profilePicture}}
+                <img 
+                  src="{{patient.profilePicture}}" 
+                  alt="Profile Picture" 
+                  class="w-32 h-32 rounded-full object-cover border-4 border-indigo-500 mb-3"
+                  id="previewImage"
+                />
+              {{else}}
+                <div class="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center border-4 border-gray-300 mb-3" id="previewImage">
+                  <i class="fas fa-user text-gray-500 text-4xl"></i>
+                </div>
+              {{/if}}
+              <p class="text-sm text-gray-500">Current Picture</p>
+            </div>
+
+            <!-- Upload Input -->
+            <div class="flex-1">
+              <label for="profilePicture" class="block text-sm font-medium text-gray-700 mb-2">
+                Upload New Picture
+              </label>
+              <div class="relative">
+                <input
+                  type="file"
+                  id="profilePicture"
+                  name="profilePicture"
+                  accept="image/*"
+                  class="block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-lg file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-indigo-50 file:text-indigo-700
+                    hover:file:bg-indigo-100 cursor-pointer"
+                  onchange="previewImage(event)"
+                />
+              </div>
+              <p class="text-xs text-gray-500 mt-2">Accepted formats: JPG, PNG, GIF, WebP. Max size: 5MB</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Basic Information -->
+        <div class="border-b pb-6">
+          <h3 class="text-lg font-semibold text-gray-700 mb-4">Basic Information</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value="{{patient.name}}"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value="{{patient.phone}}"
+                placeholder="+1 (234) 567-8900"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label for="age" class="block text-sm font-medium text-gray-700 mb-2">Age</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                value="{{patient.age}}"
+                min="1"
+                max="150"
+                placeholder="25"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label for="gender" class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+              <select
+                id="gender"
+                name="gender"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              >
+                <option value="">Select Gender</option>
+                <option value="male" {{#if (eq patient.gender 'male')}}selected{{/if}}>Male</option>
+                <option value="female" {{#if (eq patient.gender 'female')}}selected{{/if}}>Female</option>
+                <option value="other" {{#if (eq patient.gender 'other')}}selected{{/if}}>Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Health Information -->
+        <div class="border-b pb-6">
+          <h3 class="text-lg font-semibold text-gray-700 mb-4">Health Information</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="bloodType" class="block text-sm font-medium text-gray-700 mb-2">Blood Type</label>
+              <select
+                id="bloodType"
+                name="bloodType"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              >
+                <option value="">Select Blood Type</option>
+                <option value="A+" {{#if (eq patient.bloodType 'A+')}}selected{{/if}}>A+</option>
+                <option value="A-" {{#if (eq patient.bloodType 'A-')}}selected{{/if}}>A-</option>
+                <option value="B+" {{#if (eq patient.bloodType 'B+')}}selected{{/if}}>B+</option>
+                <option value="B-" {{#if (eq patient.bloodType 'B-')}}selected{{/if}}>B-</option>
+                <option value="AB+" {{#if (eq patient.bloodType 'AB+')}}selected{{/if}}>AB+</option>
+                <option value="AB-" {{#if (eq patient.bloodType 'AB-')}}selected{{/if}}>AB-</option>
+                <option value="O+" {{#if (eq patient.bloodType 'O+')}}selected{{/if}}>O+</option>
+                <option value="O-" {{#if (eq patient.bloodType 'O-')}}selected{{/if}}>O-</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="address" class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                value="{{patient.address}}"
+                placeholder="123 Main Street, City, Country"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+
+          <div class="space-y-4 mt-4">
+            <div>
+              <label for="allergies" class="block text-sm font-medium text-gray-700 mb-2">Allergies</label>
+              <textarea
+                id="allergies"
+                name="allergies"
+                rows="3"
+                placeholder="List any known allergies (e.g., Penicillin, Peanuts, Shellfish)"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              >{{patient.allergies}}</textarea>
+            </div>
+
+            <div>
+              <label for="medicalHistory" class="block text-sm font-medium text-gray-700 mb-2">Medical History</label>
+              <textarea
+                id="medicalHistory"
+                name="medicalHistory"
+                rows="3"
+                placeholder="Describe any previous medical conditions or surgeries"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              >{{patient.medicalHistory}}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex gap-4 pt-4">
+          <button
+            type="submit"
+            class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-save"></i>
+            Save Changes
+          </button>
+          <a
+            href="/patient-dashboard"
+            class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-3 rounded-lg transition flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-times"></i>
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    function previewImage(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        const preview = document.getElementById('previewImage');
+        
+        // Remove old image or placeholder
+        if (preview.tagName === 'IMG') {
+          preview.src = e.target.result;
+        } else {
+          // Create new image element
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.alt = 'Profile Picture';
+          img.className = 'w-32 h-32 rounded-full object-cover border-4 border-indigo-500';
+          img.id = 'previewImage';
+          preview.parentNode.replaceChild(img, preview);
+        }
+      };
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    }
+  </script>
+</body>
+</html>

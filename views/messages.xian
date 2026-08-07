@@ -1,0 +1,202 @@
+{{> head}}
+<body class="bg-gray-50 text-gray-800">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50 shadow-sm">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">M</div>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Mediserve</h1>
+          <p class="text-xs text-gray-500">{{patient.name}}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="text-gray-600 hover:text-gray-900"><i class="fas fa-bell"></i></button>
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-sm font-semibold">
+          {{#if patient.profilePicture}}
+            <img src="{{patient.profilePicture}}" alt="{{patient.name}}" class="w-10 h-10 rounded-full object-cover">
+          {{else}}
+            {{patient.name.[0]}}
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r border-gray-200 p-6 h-[calc(100vh-80px)] overflow-y-auto">
+      <nav class="space-y-1">
+        <a href="/patient-dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-home w-5"></i>
+          <span>Home</span>
+        </a>
+        <a href="/messages" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 font-medium bg-blue-50 text-blue-600 border-l-4 border-blue-600">
+          <i class="fas fa-comments w-5"></i>
+          <span>Messages</span>
+          <span class="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">5</span>
+        </a>
+        <a href="/appointments" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-calendar w-5"></i>
+          <span>Appointments</span>
+        </a>
+        <a href="/medical-records" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-file-medical w-5"></i>
+          <span>Medical Records</span>
+        </a>
+        <hr class="my-4 border-gray-200">
+        <a href="/profile" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-cog w-5"></i>
+          <span>Settings</span>
+        </a>
+        <a href="/logout" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-50 hover:text-red-600 transition text-gray-700">
+          <i class="fas fa-sign-out-alt w-5"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-6">
+      <div class="max-w-4xl">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Messages</h1>
+        <p class="text-gray-600 mb-6">Communicate with your doctors and healthcare team</p>
+
+        {{#if messageSent}}
+          <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+            Message sent successfully.
+          </div>
+        {{/if}}
+
+        {{#if messageError}}
+          <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            Failed to send message. Please complete recipient and message.
+          </div>
+        {{/if}}
+
+        <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Received Messages</h3>
+            {{#if inboxMessages.length}}
+              <div class="space-y-3 max-h-72 overflow-y-auto">
+                {{#each inboxMessages}}
+                  <div class="rounded-lg border border-gray-100 p-3">
+                    <p class="text-sm font-semibold text-gray-900">{{title}}</p>
+                    <p class="text-sm text-gray-600 mt-1">{{message}}</p>
+                    <p class="text-xs text-gray-400 mt-2">{{createdAtText}}</p>
+                  </div>
+                {{/each}}
+              </div>
+            {{else}}
+              <p class="text-sm text-gray-500">No received messages yet.</p>
+            {{/if}}
+          </div>
+
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Sent Messages</h3>
+            {{#if sentMessages.length}}
+              <div class="space-y-3 max-h-72 overflow-y-auto">
+                {{#each sentMessages}}
+                  <div class="rounded-lg border border-gray-100 p-3 bg-blue-50">
+                    <p class="text-sm font-semibold text-blue-900">{{title}}</p>
+                    <p class="text-sm text-gray-700 mt-1">{{message}}</p>
+                    <p class="text-xs text-gray-500 mt-2">{{createdAtText}}</p>
+                  </div>
+                {{/each}}
+              </div>
+            {{else}}
+              <p class="text-sm text-gray-500">No sent messages yet.</p>
+            {{/if}}
+          </div>
+        </div>
+
+        <!-- Message Compose Section -->
+        <div class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Send a Message</h3>
+          <form action="/messages" method="POST" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Send To</label>
+              <select id="recipientRole" name="recipientRole" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="doctor">Doctor</option>
+                <option value="nurse">Nurse</option>
+              </select>
+            </div>
+
+            <div id="doctorRecipientWrap" class="hidden">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Select Doctor</label>
+              <select id="doctorRecipient" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Choose doctor</option>
+                {{#each doctors}}
+                  <option value="{{id}}">Dr. {{name}} - {{specialization}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <div id="nurseRecipientWrap" class="hidden">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Select Nurse</label>
+              <select id="nurseRecipient" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Choose nurse</option>
+                {{#each nurses}}
+                  <option value="{{id}}">Nurse {{name}}{{#if specialization}} - {{specialization}}{{/if}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <input type="hidden" id="recipientId" name="recipientId" />
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+              <textarea name="message" required placeholder="Type your message here..." rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-medium">
+              <i class="fas fa-paper-plane mr-2"></i>
+              Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const roleSelect = document.getElementById("recipientRole");
+    const doctorWrap = document.getElementById("doctorRecipientWrap");
+    const nurseWrap = document.getElementById("nurseRecipientWrap");
+    const doctorSelect = document.getElementById("doctorRecipient");
+    const nurseSelect = document.getElementById("nurseRecipient");
+    const recipientIdInput = document.getElementById("recipientId");
+
+    const updateRecipientVisibility = () => {
+      const role = roleSelect.value;
+      if (role === "doctor") {
+        doctorWrap.classList.remove("hidden");
+        nurseWrap.classList.add("hidden");
+        nurseSelect.value = "";
+        recipientIdInput.value = doctorSelect.value || "";
+      } else if (role === "nurse") {
+        nurseWrap.classList.remove("hidden");
+        doctorWrap.classList.add("hidden");
+        doctorSelect.value = "";
+        recipientIdInput.value = nurseSelect.value || "";
+      } else {
+        doctorWrap.classList.add("hidden");
+        nurseWrap.classList.add("hidden");
+        doctorSelect.value = "";
+        nurseSelect.value = "";
+        recipientIdInput.value = "";
+      }
+    };
+
+    roleSelect.addEventListener("change", updateRecipientVisibility);
+    doctorSelect.addEventListener("change", () => {
+      if (roleSelect.value === "doctor") {
+        recipientIdInput.value = doctorSelect.value || "";
+      }
+    });
+    nurseSelect.addEventListener("change", () => {
+      if (roleSelect.value === "nurse") {
+        recipientIdInput.value = nurseSelect.value || "";
+      }
+    });
+  </script>
+</body>
+</html>

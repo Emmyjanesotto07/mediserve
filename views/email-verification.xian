@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Your Email | MEDISERVE</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
+    <!-- Logo -->
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+        <span class="text-3xl">📧</span>
+      </div>
+      <h1 class="text-3xl font-bold text-slate-900">Verify Your Email</h1>
+      <p class="text-slate-600 mt-2">Welcome to MEDISERVE</p>
+    </div>
+
+    <!-- Message -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+      <p class="text-blue-900 text-sm leading-relaxed">
+        {{message}}
+      </p>
+    </div>
+
+    <!-- Email Display -->
+    <div class="bg-slate-50 rounded-lg p-4 mb-6 text-center">
+      <p class="text-xs text-slate-600 font-semibold uppercase mb-1">Email Address</p>
+      <p class="text-lg font-semibold text-slate-900 break-all">{{email}}</p>
+    </div>
+
+    <!-- Next Steps -->
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-6">
+      <h3 class="font-semibold text-slate-900 mb-3 flex items-center">
+        <span class="text-xl mr-2">✓</span> Next Steps:
+      </h3>
+      <ol class="space-y-2 text-sm text-slate-700">
+        <li class="flex items-start">
+          <span class="font-bold text-blue-600 mr-2">1.</span>
+          <span>Check your email inbox for a message from MEDISERVE</span>
+        </li>
+        <li class="flex items-start">
+          <span class="font-bold text-blue-600 mr-2">2.</span>
+          <span>Click the "Verify Email Address" button in the email</span>
+        </li>
+        <li class="flex items-start">
+          <span class="font-bold text-blue-600 mr-2">3.</span>
+          <span>You'll be redirected back here to confirm verification</span>
+        </li>
+        <li class="flex items-start">
+          <span class="font-bold text-blue-600 mr-2">4.</span>
+          <span>Log in to your account and start using MEDISERVE</span>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Spam Notice -->
+    <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+      <p class="text-xs text-amber-900">
+        <span class="font-semibold">💡 Tip:</span> If you don't see the email in your inbox, check your spam or junk folder, and mark it as "Not Spam".
+      </p>
+    </div>
+
+    <!-- Resend Email Option -->
+    <div class="text-center mb-6">
+      <p class="text-sm text-slate-600 mb-3">Didn't receive the email?</p>
+      <a href="/resend-verification?email={{email}}" class="text-blue-600 hover:text-blue-700 font-semibold text-sm inline-block px-4 py-2 rounded-lg hover:bg-blue-50 transition duration-200">
+        Resend Verification Email
+      </a>
+    </div>
+
+    <!-- Divider -->
+    <hr class="my-6 border-slate-200">
+
+    <!-- Back to Login -->
+    <div class="text-center">
+      <p class="text-sm text-slate-600 mb-3">Already verified?</p>
+      <a href="/login" class="inline-block w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-200">
+        Go to Login
+      </a>
+    </div>
+
+    <!-- Help -->
+    <div class="mt-6 pt-6 border-t border-slate-200">
+      <p class="text-center text-xs text-slate-500">
+        Need help? 
+        <a href="/" class="text-blue-600 hover:underline">Contact Support</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Background decoration -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute top-20 left-10 w-40 h-40 bg-blue-200 rounded-full opacity-20 blur-3xl"></div>
+    <div class="absolute bottom-20 right-10 w-40 h-40 bg-indigo-200 rounded-full opacity-20 blur-3xl"></div>
+  </div>
+</body>
+</html>

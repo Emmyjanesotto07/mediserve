@@ -1,0 +1,109 @@
+/*
+MIT License
+
+Copyright (c) 2025 Christian I. Cabrera || XianFire Framework
+Mindoro State University - Philippines
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+import { DataTypes } from "sequelize";
+import { sequelize } from "./db.js";
+
+export const PaymentTransaction = sequelize.define("PaymentTransaction", {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  patientId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: "Patients",
+      key: "id"
+    }
+  },
+  doctorId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: "Doctors",
+      key: "id"
+    }
+  },
+  appointmentId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: "Appointments",
+      key: "id"
+    }
+  },
+  consultationId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: "Consultations",
+      key: "id"
+    }
+  },
+  amount: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
+  },
+  currency: {
+    type: DataTypes.STRING,
+    defaultValue: "PHP"
+  },
+  paymentMethod: {
+    type: DataTypes.ENUM("credit_card", "debit_card", "online_banking", "wallet", "cash"),
+    defaultValue: "credit_card"
+  },
+  status: {
+    type: DataTypes.ENUM("pending", "completed", "failed", "refunded", "cancelled"),
+    defaultValue: "pending"
+  },
+  transactionId: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  transactionDate: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  },
+  invoiceNumber: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  }
+});
+
+export { sequelize };

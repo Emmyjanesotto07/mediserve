@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doctor Dashboard - Mediserve</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50 shadow-sm">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">
+          <i class="fas fa-stethoscope"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Mediserve</h1>
+          <p class="text-xs text-gray-500">Doctor Dashboard</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <!-- Notification Bell -->
+        <div class="relative group">
+          <button class="text-gray-600 hover:text-gray-900 relative">
+            <i class="fas fa-bell text-xl"></i>
+            <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+          </button>
+          <div class="hidden group-hover:block absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg p-4 z-50">
+            <div class="space-y-3">
+              <p class="text-sm font-semibold text-gray-700">Notifications</p>
+              <div class="border-l-4 border-blue-500 pl-3 py-2">
+                <p class="text-sm font-medium">New Appointment Request</p>
+                <p class="text-xs text-gray-500">2 minutes ago</p>
+              </div>
+              <div class="border-l-4 border-yellow-500 pl-3 py-2">
+                <p class="text-sm font-medium">Patient Message Received</p>
+                <p class="text-xs text-gray-500">5 minutes ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Profile Avatar -->
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-sm font-semibold cursor-pointer">
+          Dr. A
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex">
+    <!-- Sidebar Menu -->
+    <aside class="w-64 bg-white border-r border-gray-200 h-[calc(100vh-80px)] overflow-y-auto p-6">
+      <nav class="space-y-2">
+        <!-- Dashboard -->
+        <a href="#dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-green-50 text-green-600 font-medium border-l-4 border-green-600">
+          <i class="fas fa-home w-5"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <!-- Appointments -->
+        <a href="#appointments" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-calendar-check w-5"></i>
+          <span>Appointments</span>
+          <span class="ml-auto bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">5</span>
+        </a>
+
+        <!-- Patients -->
+        <a href="#patients" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-users w-5"></i>
+          <span>Patients</span>
+        </a>
+
+        <!-- Consultations -->
+        <a href="#consultations" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-video w-5"></i>
+          <span>Consultations</span>
+          <span class="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+        </a>
+
+        <!-- Prescriptions -->
+        <a href="#prescriptions" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-prescription-bottle w-5"></i>
+          <span>Prescriptions</span>
+        </a>
+
+        <!-- Schedule -->
+        <a href="#schedule" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-clock w-5"></i>
+          <span>Schedule</span>
+        </a>
+
+        <!-- Messages -->
+        <a href="#messages" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-comments w-5"></i>
+          <span>Messages</span>
+          <span class="ml-auto bg-purple-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">4</span>
+        </a>
+
+        <!-- Reports -->
+        <a href="#reports" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-chart-bar w-5"></i>
+          <span>Reports</span>
+        </a>
+
+        <hr class="my-4 border-gray-200">
+
+        <!-- Settings -->
+        <a href="#settings" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700">
+          <i class="fas fa-cog w-5"></i>
+          <span>Settings</span>
+        </a>
+
+        <!-- Logout -->
+        <a href="/logout" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-50 hover:text-red-600 transition text-gray-700">
+          <i class="fas fa-sign-out-alt w-5"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+      <!-- Dashboard Overview Cards -->
+      <div id="dashboard" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <!-- Today's Appointments -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm font-medium">Today's Appointments</p>
+              <p class="text-4xl font-bold text-blue-600 mt-2">5</p>
+              <p class="text-xs text-gray-500 mt-1">3 completed, 2 pending</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-calendar text-2xl text-blue-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Patients -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm font-medium">Total Patients</p>
+              <p class="text-4xl font-bold text-green-600 mt-2">248</p>
+              <p class="text-xs text-gray-500 mt-1">+12 this month</p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-users text-2xl text-green-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending Consultations -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm font-medium">Pending Consultations</p>
+              <p class="text-4xl font-bold text-yellow-600 mt-2">2</p>
+              <p class="text-xs text-gray-500 mt-1">Action required</p>
+            </div>
+            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-hourglass-end text-2xl text-yellow-600"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Earnings -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm font-medium">Earnings (This Month)</p>
+              <p class="text-4xl font-bold text-purple-600 mt-2">₱45,250</p>
+              <p class="text-xs text-gray-500 mt-1">52 consultations</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-money-bill text-2xl text-purple-600"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Grid -->
+      <div class="grid grid-cols-3 gap-6">
+        <!-- Left: Upcoming Appointments & Consultations -->
+        <div class="col-span-2 space-y-6">
+          <!-- Upcoming Appointments Table -->
+          <div id="appointments" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <i class="fas fa-calendar-check text-blue-600"></i>
+                Upcoming Appointments
+              </h2>
+              <a href="#" class="text-blue-600 text-sm font-medium hover:underline">View All</a>
+            </div>
+            
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-gray-200">
+                    <th class="text-left py-3 px-3 text-gray-700 font-semibold">Patient Name</th>
+                    <th class="text-left py-3 px-3 text-gray-700 font-semibold">Time</th>
+                    <th class="text-left py-3 px-3 text-gray-700 font-semibold">Type</th>
+                    <th class="text-left py-3 px-3 text-gray-700 font-semibold">Status</th>
+                    <th class="text-center py-3 px-3 text-gray-700 font-semibold">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                  <tr class="hover:bg-gray-50">
+                    <td class="py-3 px-3">
+                      <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-xs font-semibold text-blue-600">JD</div>
+                        <span class="font-medium">John Doe</span>
+                      </div>
+                    </td>
+                    <td class="py-3 px-3">10:30 AM</td>
+                    <td class="py-3 px-3"><span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full"><i class="fas fa-video"></i> Video</span></td>
+                    <td class="py-3 px-3"><span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Ready</span></td>
+                    <td class="py-3 px-3 text-center">
+                      <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-medium transition">
+                        <i class="fas fa-play"></i> Start
+                      </button>
+                    </td>
+                  </tr>
+                  
+                  <tr class="hover:bg-gray-50">
+                    <td class="py-3 px-3">
+                      <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center text-xs font-semibold text-pink-600">SM</div>
+                        <span class="font-medium">Sarah Miller</span>
+                      </div>
+                    </td>
+                    <td class="py-3 px-3">11:00 AM</td>
+                    <td class="py-3 px-3"><span class="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full"><i class="fas fa-phone"></i> Chat</span></td>
+                    <td class="py-3 px-3"><span class="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">Pending</span></td>
+                    <td class="py-3 px-3 text-center">
+                      <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-medium transition">
+                        <i class="fas fa-play"></i> Start
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr class="hover:bg-gray-50">
+                    <td class="py-3 px-3">
+                      <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center text-xs font-semibold text-yellow-600">MC</div>
+                        <span class="font-medium">Maria Cruz</span>
+                      </div>
+                    </td>
+                    <td class="py-3 px-3">02:00 PM</td>
+                    <td class="py-3 px-3"><span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full"><i class="fas fa-video"></i> Video</span></td>
+                    <td class="py-3 px-3"><span class="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">Scheduled</span></td>
+                    <td class="py-3 px-3 text-center">
+                      <button class="bg-gray-400 text-white px-3 py-1 rounded text-xs font-medium cursor-not-allowed opacity-50">
+                        <i class="fas fa-clock"></i> Later
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Active Consultation Panel -->
+          <div id="consultations" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
+              <i class="fas fa-video text-red-600"></i>
+              Active Consultation
+            </h2>
+            
+            <div class="bg-black rounded-lg overflow-hidden mb-4" style="aspect-ratio: 16/9;">
+              <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-black">
+                <div class="text-center">
+                  <i class="fas fa-video text-6xl text-gray-600 mb-4"></i>
+                  <p class="text-gray-400">Video call will appear here</p>
+                  <p class="text-sm text-gray-500 mt-2">No active consultation</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 mb-4">
+              <button class="bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-medium transition flex items-center justify-center gap-2">
+                <i class="fas fa-microphone"></i> Start Consultation
+              </button>
+              <button class="bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition flex items-center justify-center gap-2 opacity-50 cursor-not-allowed">
+                <i class="fas fa-phone-slash"></i> End Consultation
+              </button>
+              <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition flex items-center justify-center gap-2">
+                <i class="fas fa-share-screen"></i> Share Screen
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Patient Profile & Quick Actions -->
+        <div class="space-y-6">
+          <!-- Patient Profile View -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
+              <i class="fas fa-user text-blue-600"></i>
+              Patient Profile
+            </h2>
+
+            <div class="text-center mb-4">
+              <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
+                JD
+              </div>
+              <p class="text-lg font-semibold text-gray-900">John Doe</p>
+              <p class="text-sm text-gray-500">Patient ID: #12345</p>
+            </div>
+
+            <div class="space-y-3 border-t border-gray-200 pt-4">
+              <div class="flex justify-between">
+                <span class="text-gray-600 text-sm">Age:</span>
+                <span class="font-medium">32 years</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 text-sm">Gender:</span>
+                <span class="font-medium">Male</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 text-sm">Blood Type:</span>
+                <span class="font-medium">O+</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 text-sm">Last Visit:</span>
+                <span class="font-medium">May 1, 2026</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600 text-sm">Allergies:</span>
+                <span class="font-medium text-orange-600">Penicillin</span>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-gray-200">
+              <p class="text-sm font-semibold text-gray-700 mb-2">Medical History</p>
+              <div class="text-xs space-y-1 text-gray-600">
+                <p>• Hypertension (2020)</p>
+                <p>• Diabetes Type 2 (2019)</p>
+                <p>• Asthma</p>
+              </div>
+            </div>
+
+            <button class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition">
+              View Full Profile
+            </button>
+          </div>
+
+          <!-- Prescription UI -->
+          <div id="prescriptions" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
+              <i class="fas fa-prescription-bottle text-green-600"></i>
+              Send Prescription
+            </h2>
+
+            <div class="space-y-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Medicine Name</label>
+                <input type="text" placeholder="e.g., Paracetamol" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Dosage</label>
+                <input type="text" placeholder="e.g., 500mg" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
+                <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                  <option>Once daily</option>
+                  <option>Twice daily</option>
+                  <option>Three times daily</option>
+                  <option>As needed</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+                <input type="text" placeholder="e.g., 7 days" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Special Instructions</label>
+                <textarea placeholder="e.g., Take with food..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 resize-none" rows="3"></textarea>
+              </div>
+
+              <button class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-medium transition flex items-center justify-center gap-2">
+                <i class="fas fa-paper-plane"></i> Send to Patient
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Diagnosis -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
+              <i class="fas fa-stethoscope text-red-600"></i>
+              Diagnosis
+            </h2>
+
+            <div class="space-y-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Diagnosis</label>
+                <textarea placeholder="Enter diagnosis findings..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 resize-none" rows="4"></textarea>
+              </div>
+
+              <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition">
+                Save Diagnosis
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</body>
+</html>

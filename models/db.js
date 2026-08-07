@@ -36,12 +36,12 @@ export const sequelize = databaseUrl
       logging: false
     })
   : new Sequelize(
-      process.env.MYSQL_DATABASE || "Mediserve",
-      process.env.MYSQL_USER || "root",
-      process.env.MYSQL_PASSWORD || "",
+      process.env.MYSQL_DATABASE || process.env.DB_NAME || "Mediserve",
+      process.env.MYSQL_USER || process.env.DB_USER || "root",
+      process.env.MYSQL_PASSWORD || process.env.DB_PASS || "",
       {
-        host: process.env.MYSQL_HOST || "localhost",
-        port: Number(process.env.MYSQL_PORT || 3306),
+        host: process.env.MYSQL_HOST || process.env.DB_HOST || "localhost",
+        port: Number(process.env.MYSQL_PORT || process.env.DB_PORT || 3306),
         dialect: "mysql",
         logging: false
       }

@@ -24,7 +24,7 @@
     SOFTWARE.
     */
     
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { User, sequelize } from "../models/userModel.js";
 import { Doctor } from "../models/doctorModel.js";

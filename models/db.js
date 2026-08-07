@@ -1,32 +1,48 @@
+﻿/*
+MIT License
 
-      /*
-    MIT License
-    
-    Copyright (c) 2025 Christian I. Cabrera || XianFire Framework
-    Mindoro State University - Philippines
+Copyright (c) 2025 Christian I. Cabrera || XianFire Framework
+Mindoro State University - Philippines
 
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-    */
-    
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
 
-export const sequelize = new Sequelize("Mediserve", "root", "", {
-  host: "localhost",
-  dialect: "mysql"
-});
+dotenv.config();
+
+const databaseUrl = process.env.DATABASE_URL;
+export const sequelize = databaseUrl
+  ? new Sequelize(databaseUrl, {
+      dialect: "mysql",
+      protocol: "mysql",
+      logging: false
+    })
+  : new Sequelize(
+      process.env.MYSQL_DATABASE || "Mediserve",
+      process.env.MYSQL_USER || "root",
+      process.env.MYSQL_PASSWORD || "",
+      {
+        host: process.env.MYSQL_HOST || "localhost",
+        port: Number(process.env.MYSQL_PORT || 3306),
+        dialect: "mysql",
+        logging: false
+      }
+    );

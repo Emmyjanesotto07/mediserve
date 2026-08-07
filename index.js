@@ -129,6 +129,6 @@ const startServer = (port, attemptsLeft = MAX_PORT_ATTEMPTS) => {
   });
 };
 
-if (!process.env.ELECTRON) {
+if (!process.env.ELECTRON && !process.env.VERCEL) {
   startServer(PORT);
 }

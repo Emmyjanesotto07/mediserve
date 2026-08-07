@@ -26,7 +26,7 @@
 // Load environment variables
 import dotenv from "dotenv";
 dotenv.config();
-    
+
 import express from "express";
 import path from "path";
 import session from "express-session";
@@ -129,6 +129,7 @@ const startServer = (port, attemptsLeft = MAX_PORT_ATTEMPTS) => {
   });
 };
 
-if (!process.env.ELECTRON && !process.env.VERCEL) {
+const isMain = process.argv[1] === __filename;
+if (isMain && !process.env.ELECTRON && !process.env.VERCEL) {
   startServer(PORT);
 }

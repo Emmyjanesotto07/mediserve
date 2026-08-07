@@ -251,6 +251,32 @@ PORT=3000
 
 ---
 
+## Render Deployment
+
+The app is ready for Render deployment using `render.yaml`.
+
+1. Push your code to GitHub.
+2. In Render, create a new Web Service and connect your repository.
+3. Use branch `main` and let Render detect the `render.yaml` file.
+4. Set these Environment Variables in Render:
+   - `DB_HOST` = your remote MySQL host
+   - `DB_USER` = your database username
+   - `DB_PASS` = your database password
+   - `DB_NAME` = Mediserve
+   - `APP_URL` = your Render app URL
+   - `EMAIL_USER` = your email address
+   - `EMAIL_PASSWORD` = your email app password
+
+Optional if using a full MySQL connection string:
+
+```env
+DATABASE_URL=mysql://user:pass@host:3306/Mediserve
+```
+
+5. Deploy the service and check the Render logs for startup success.
+
+---
+
 ## Debugging & Logs
 
 When running server, you'll see:

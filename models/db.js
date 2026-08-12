@@ -25,15 +25,27 @@ SOFTWARE.
 
 import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
+import { createRequire } from "module";
 
 dotenv.config();
+
+const requireC = createRequire(import.meta.url);
+let mysql2;
+try {
+  mysql2 = requireC("mysql2");
+} catch (err) {
+  console.error(
+    "mysql2 driver not found. Install it with `npm install mysql2` or ensure it's included in production dependencies."
+  );
+}
 
 const databaseUrl = process.env.DATABASE_URL;
 export const sequelize = databaseUrl
   ? new Sequelize(databaseUrl, {
       dialect: "mysql",
       protocol: "mysql",
-      logging: false
+      logging: false,
+      dialectModule: mysql2
     })
   : new Sequelize(
       process.env.MYSQL_DATABASE || process.env.DB_NAME || "Mediserve",
@@ -43,6 +55,7 @@ export const sequelize = databaseUrl
         host: process.env.MYSQL_HOST || process.env.DB_HOST || "localhost",
         port: Number(process.env.MYSQL_PORT || process.env.DB_PORT || 3306),
         dialect: "mysql",
-        logging: false
+        logging: false,
+        dialectModule: mysql2
       }
     );

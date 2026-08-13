@@ -17,20 +17,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Test the connection without blocking the app
-let emailServiceReady = false;
-transporter.verify((error, success) => {
-  if (error) {
-    console.warn("⚠️ Email service warning:", error.message);
-    console.warn("💡 To fix: Get Gmail App Password from https://myaccount.google.com/apppasswords");
-    console.warn("💡 Then update EMAIL_USER and EMAIL_PASSWORD in .env file");
-    emailServiceReady = false;
-  } else {
-    console.log("✓ Email service is ready to send messages");
-    emailServiceReady = true;
-  }
-});
-
 export const sendVerificationEmail = async (email, name, verificationToken, verificationLink) => {
   if (!emailServiceReady) {
     console.warn(`⚠️ Email service not available. Verification email not sent to ${email}`);

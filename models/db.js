@@ -45,7 +45,13 @@ export const sequelize = databaseUrl
       dialect: "mysql",
       protocol: "mysql",
       logging: false,
-      dialectModule: mysql2
+      dialectModule: mysql2,
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+      }
     })
   : new Sequelize(
       process.env.MYSQL_DATABASE || process.env.DB_NAME || "Mediserve",
@@ -56,6 +62,18 @@ export const sequelize = databaseUrl
         port: Number(process.env.MYSQL_PORT || process.env.DB_PORT || 3306),
         dialect: "mysql",
         logging: false,
-        dialectModule: mysql2
+        dialectModule: mysql2,
+        pool: {
+          max: 5,
+          min: 0,
+          acquire: 30000,
+          idle: 10000
+        }
       }
     );
+
+// Handle connection errors gracefully
+sequelize.authenticate().catch(err => {
+  console.error("⚠️ Database connection failed:", err.message);
+  // Don't throw - allow the app to start even if DB fails initially
+});

@@ -88,28 +88,34 @@ app.use((req, res, next) => {
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "xian");
 const partialsDir = path.join(__dirname, "views/partials");
-fs.readdir(partialsDir, (err, files) => {
-  if (err) {
-    console.error("❌ Could not read partials directory:", err);
-    return;
-  }
 
-   files
-    .filter(file => file.endsWith('.xian'))
-    .forEach(file => {
-      const partialName = file.replace('.xian', ''); 
-      const fullPath = path.join(partialsDir, file);
+// Safely load partials with error handling
+if (fs.existsSync(partialsDir)) {
+  fs.readdir(partialsDir, (err, files) => {
+    if (err) {
+      console.error("❌ Could not read partials directory:", err);
+      return;
+    }
 
-      fs.readFile(fullPath, 'utf8', (err, content) => {
-        if (err) {
-          console.error(`❌ Failed to read partial: ${file}`, err);
-          return;
-        }
-        hbs.registerPartial(partialName, content);
-        
+     files
+      .filter(file => file.endsWith('.xian'))
+      .forEach(file => {
+        const partialName = file.replace('.xian', ''); 
+        const fullPath = path.join(partialsDir, file);
+
+        fs.readFile(fullPath, 'utf8', (err, content) => {
+          if (err) {
+            console.error(`❌ Failed to read partial: ${file}`, err);
+            return;
+          }
+          hbs.registerPartial(partialName, content);
+          
+        });
       });
-    });
-});
+  });
+} else {
+  console.warn("⚠️ Partials directory not found:", partialsDir);
+}
 
 app.use("/", router);
 

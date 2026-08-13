@@ -17,17 +17,26 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Test the connection
+// Test the connection without blocking the app
+let emailServiceReady = false;
 transporter.verify((error, success) => {
   if (error) {
     console.warn("⚠️ Email service warning:", error.message);
-    console.warn("💡 Please configure EMAIL_USER and EMAIL_PASSWORD in .env file");
+    console.warn("💡 To fix: Get Gmail App Password from https://myaccount.google.com/apppasswords");
+    console.warn("💡 Then update EMAIL_USER and EMAIL_PASSWORD in .env file");
+    emailServiceReady = false;
   } else {
     console.log("✓ Email service is ready to send messages");
+    emailServiceReady = true;
   }
 });
 
 export const sendVerificationEmail = async (email, name, verificationToken, verificationLink) => {
+  if (!emailServiceReady) {
+    console.warn(`⚠️ Email service not available. Verification email not sent to ${email}`);
+    return { success: false, message: "Email service unavailable" };
+  }
+  
   try {
     const mailOptions = {
       from: '"MEDISERVE" <noreply@mediserve.com>',
@@ -95,6 +104,11 @@ export const sendVerificationEmail = async (email, name, verificationToken, veri
 };
 
 export const sendWelcomeEmail = async (email, name, userRole) => {
+  if (!emailServiceReady) {
+    console.warn(`⚠️ Email service not available. Welcome email not sent to ${email}`);
+    return { success: false, message: "Email service unavailable" };
+  }
+  
   try {
     const roleDescription = {
       patient: "Patient",
@@ -175,6 +189,11 @@ export const sendWelcomeEmail = async (email, name, userRole) => {
 };
 
 export const sendPasswordResetEmail = async (email, name, resetLink) => {
+  if (!emailServiceReady) {
+    console.warn(`⚠️ Email service not available. Password reset email not sent to ${email}`);
+    return { success: false, message: "Email service unavailable" };
+  }
+  
   try {
     const mailOptions = {
       from: '"MEDISERVE" <noreply@mediserve.com>',
@@ -235,6 +254,11 @@ export const sendPasswordResetEmail = async (email, name, resetLink) => {
 };
 
 export const sendApprovalEmail = async (email, name, userRole) => {
+  if (!emailServiceReady) {
+    console.warn(`⚠️ Email service not available. Approval email not sent to ${email}`);
+    return { success: false, message: "Email service unavailable" };
+  }
+  
   try {
     const mailOptions = {
       from: '"MEDISERVE" <noreply@mediserve.com>',

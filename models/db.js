@@ -37,63 +37,100 @@ const require = createRequire(__filename);
 
 let sequelize;
 
-// Check if we need to load mysql2
-const databaseUrl = process.env.DATABASE_URL || 
-  (process.env.MYSQL_HOST ? `mysql://${process.env.MYSQL_USER || 'root'}:${process.env.MYSQL_PASSWORD || ''}@${process.env.MYSQL_HOST}:${process.env.MYSQL_PORT || 3306}/${process.env.MYSQL_DATABASE || 'Mediserve'}` : null);
+// =====================================================
+// DATABASE ENVIRONMENT VARIABLES
+// =====================================================
+// DB_* variables are prioritized because these are the
+// variables we configured in Render.
+//
+// Railway values should be placed in Render as:
+//
+// DB_HOST = Railway MYSQLHOST
+// DB_PORT = Railway MYSQLPORT
+// DB_USER = Railway MYSQLUSER
+// DB_PASS = Railway MYSQLPASSWORD
+// DB_NAME = Railway MYSQLDATABASE
+// =====================================================
+
+const DB_HOST =
+  process.env.DB_HOST ||
+  process.env.MYSQL_HOST ||
+  "localhost";
+
+const DB_PORT =
+  process.env.DB_PORT ||
+  process.env.MYSQL_PORT ||
+  3306;
+
+const DB_USER =
+  process.env.DB_USER ||
+  process.env.MYSQL_USER ||
+  "root";
+
+const DB_PASS =
+  process.env.DB_PASS ||
+  process.env.MYSQL_PASSWORD ||
+  "";
+
+const DB_NAME =
+  process.env.DB_NAME ||
+  process.env.MYSQL_DATABASE ||
+  "Mediserve";
+
+// =====================================================
+// CREATE DATABASE CONNECTION
+// =====================================================
 
 try {
   const mysql2 = require("mysql2");
-  
-  if (databaseUrl) {
-    sequelize = new Sequelize(databaseUrl, {
-      dialect: "mysql",
-      protocol: "mysql",
-      logging: false,
-      dialectModule: mysql2,
-      pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-      }
-    });
-  } else {
-    sequelize = new Sequelize(
-      process.env.MYSQL_DATABASE || process.env.DB_NAME || "Mediserve",
-      process.env.MYSQL_USER || process.env.DB_USER || "root",
-      process.env.MYSQL_PASSWORD || process.env.DB_PASS || "",
-      {
-        host: process.env.MYSQL_HOST || process.env.DB_HOST || "localhost",
-        port: Number(process.env.MYSQL_PORT || process.env.DB_PORT || 3306),
-        dialect: "mysql",
-        logging: false,
-        dialectModule: mysql2,
-        pool: {
-          max: 5,
-          min: 0,
-          acquire: 30000,
-          idle: 10000
-        }
-      }
-    );
-  }
-} catch (err) {
-  console.error("⚠️ mysql2 not available, creating mock Sequelize instance");
-  // Create a mock sequelize that won't crash the app
-  sequelize = new Sequelize("mysql://localhost/temp", {
+
+  console.log("🔌 Database configuration:");
+  console.log("   Host:", DB_HOST);
+  console.log("   Port:", DB_PORT);
+  console.log("   Database:", DB_NAME);
+  console.log("   User:", DB_USER);
+
+  sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
+    host: DB_HOST,
+    port: Number(DB_PORT),
+    dialect: "mysql",
     logging: false,
+    dialectModule: mysql2,
+
     pool: {
-      max: 1,
+      max: 5,
       min: 0,
       acquire: 30000,
       idle: 10000
+    },
+
+    define: {
+      timestamps: true
     }
+  });
+
+} catch (err) {
+
+  console.error("❌ Failed to initialize MySQL:", err.message);
+
+  // Fallback connection so the application itself
+  // does not immediately crash.
+  sequelize = new Sequelize("mysql://localhost/temp", {
+    logging: false,
+    dialect: "mysql"
   });
 }
 
 export { sequelize };
 
-// Handle connection errors gracefully without crashing
-sequelize.authenticate().catch(err => {
-  console.warn("⚠️ Database connection warning:", err.message);
-});
+// =====================================================
+// TEST DATABASE CONNECTION
+// =====================================================
+
+sequelize.authenticate()
+  .then(() => {
+    console.log("✅ Database connected successfully!");
+  })
+  .catch(err => {
+    console.warn("⚠️ Database connection warning:", err.message);
+  });

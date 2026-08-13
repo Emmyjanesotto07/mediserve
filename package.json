@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "engines": {
-    "node":"20.19.0"
+    "node": "20.19.0"
   },
   "scripts": {
     "start": "node index.js",
@@ -28,8 +28,10 @@
     "inquirer": "^9.2.15",
     "jsonwebtoken": "^9.0.3",
     "multer": "^1.4.5-lts.1",
-    "mysql2": "^3.15.3",
+    "mysql2": "^3.23.3",
     "nodemailer": "^9.0.5",
+    "pg": "^8.23.0",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.3",
     "uuid": "^11.1.1"
   },

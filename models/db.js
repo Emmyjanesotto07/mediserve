@@ -25,19 +25,9 @@ SOFTWARE.
 
 import dotenv from "dotenv";
 import { Sequelize } from "sequelize";
-import { createRequire } from "module";
+import mysql2 from "mysql2/promise";
 
 dotenv.config();
-
-const requireC = createRequire(import.meta.url);
-let mysql2;
-try {
-  mysql2 = requireC("mysql2");
-} catch (err) {
-  console.error(
-    "mysql2 driver not found. Install it with `npm install mysql2` or ensure it's included in production dependencies."
-  );
-}
 
 const databaseUrl = process.env.DATABASE_URL;
 export const sequelize = databaseUrl
